@@ -1,0 +1,81 @@
+"""CrossVerify-Bench: Markov-Chain Theory & Empirical Pareto Benchmark for Multi-Agent Verification."""
+
+from crossverify.markov_theory import (
+    MarkovVerifierChain,
+    VerificationParams,
+    compute_phase_diagram_grid,
+)
+from crossverify.pareto import (
+    ConfigPoint,
+    compute_hypervolume_2d,
+    compute_hypervolume_3d,
+    compute_marginal_token_utility,
+    dominates_2d,
+    dominates_3d,
+    fast_non_dominated_sort_3d,
+    find_knee_point_2d,
+    pareto_frontier_2d,
+    pareto_frontier_3d,
+    select_under_budget,
+)
+from crossverify.tasks import (
+    BenchmarkTask,
+    PromptFeatures,
+    build_benchmark_suite,
+    extract_prompt_features,
+    summarize_benchmark_suite,
+)
+from crossverify.topologies import (
+    MODEL_REGISTRY,
+    VERIFIER_REGISTRY,
+    AdversarialDebateDAG,
+    BaseTopology,
+    CalibratedReplayBackend,
+    ExecutionTrace,
+    GeneratorVerifierLoop,
+    LiveOpenAIBackend,
+    ModelSpec,
+    ParetoAdaptiveRouter,
+    SelfConsistencyVote,
+    SinglePass,
+    VerifierSpec,
+    build_benchmark_configurations,
+)
+
+__version__ = "0.2.0"
+
+__all__ = [
+    "MarkovVerifierChain",
+    "VerificationParams",
+    "compute_phase_diagram_grid",
+    "ConfigPoint",
+    "dominates_2d",
+    "dominates_3d",
+    "pareto_frontier_2d",
+    "pareto_frontier_3d",
+    "fast_non_dominated_sort_3d",
+    "compute_hypervolume_2d",
+    "compute_hypervolume_3d",
+    "compute_marginal_token_utility",
+    "find_knee_point_2d",
+    "select_under_budget",
+    "BenchmarkTask",
+    "PromptFeatures",
+    "extract_prompt_features",
+    "build_benchmark_suite",
+    "summarize_benchmark_suite",
+    "ModelSpec",
+    "VerifierSpec",
+    "MODEL_REGISTRY",
+    "VERIFIER_REGISTRY",
+    "ExecutionTrace",
+    "CalibratedReplayBackend",
+    "LiveOpenAIBackend",
+    "BaseTopology",
+    "SinglePass",
+    "SelfConsistencyVote",
+    "GeneratorVerifierLoop",
+    "AdversarialDebateDAG",
+    "ParetoAdaptiveRouter",
+    "build_benchmark_configurations",
+]

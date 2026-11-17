@@ -1,0 +1,1589 @@
+{
+  "benchmark_name": "CrossVerify-Bench",
+  "version": "0.2.0",
+  "n_configurations": 28,
+  "n_seeds": 100,
+  "elapsed_seconds": 29.554,
+  "suite_summary": {
+    "total_tasks": 180,
+    "by_domain": {
+      "code_patch": 60,
+      "scientific_symbolic": 60,
+      "evidence_crosscheck": 60
+    },
+    "by_difficulty": {
+      "easy": 60,
+      "medium": 60,
+      "hard": 60
+    },
+    "mean_prompt_complexity_by_difficulty": {
+      "easy": 0.2071044015029522,
+      "medium": 0.45080749524227787,
+      "hard": 0.7156563054050977
+    }
+  },
+  "pareto_summary": {
+    "global_2d_frontier_ids": [
+      "S1_Fast",
+      "S1_Mid",
+      "S5_Router_Lite",
+      "S5_Router_Eco",
+      "S5_Router_Balanced",
+      "S5_Router_Strict",
+      "S3_GV3_Frontier_ToolVer",
+      "S4_Debate_Hetero_ToolJudge"
+    ],
+    "static_2d_frontier_ids": [
+      "S1_Fast",
+      "S1_Mid",
+      "S1_Frontier",
+      "S2_SC3_Mid",
+      "S3_GV2_Mid_CalibVer",
+      "S1_Reasoning",
+      "S3_GV1_Frontier_ToolVer",
+      "S3_GV3_Frontier_ToolVer",
+      "S4_Debate_Hetero_ToolJudge"
+    ],
+    "knee_point_config_id": "S5_Router_Eco",
+    "knee_point_label": "ParetoRouter-Eco",
+    "hypervolume_2d_static": 0.759839,
+    "hypervolume_2d_global": 0.813898,
+    "hypervolume_2d_gain_pct": 7.115,
+    "hypervolume_3d_static": 0.671369,
+    "hypervolume_3d_global": 0.719831,
+    "hypervolume_3d_gain_pct": 7.218,
+    "marginal_token_utility": [
+      {
+        "config_id": "S1_Fast",
+        "label": "SinglePass (Fast-8B)",
+        "accuracy": 0.5579999999999999,
+        "mean_tokens": 418.8389734282782,
+        "delta_accuracy_pp": 0.0,
+        "delta_tokens": 0.0,
+        "marginal_pp_per_1k_tokens": null
+      },
+      {
+        "config_id": "S1_Mid",
+        "label": "SinglePass (Mid-32B)",
+        "accuracy": 0.7120555555555557,
+        "mean_tokens": 748.8120328141359,
+        "delta_accuracy_pp": 15.405555555555573,
+        "delta_tokens": 329.9730593858577,
+        "marginal_pp_per_1k_tokens": 46.687313152862316
+      },
+      {
+        "config_id": "S5_Router_Lite",
+        "label": "ParetoRouter-Lite",
+        "accuracy": 0.8488333333333332,
+        "mean_tokens": 1139.0250535990726,
+        "delta_accuracy_pp": 13.677777777777756,
+        "delta_tokens": 390.2130207849367,
+        "marginal_pp_per_1k_tokens": 35.05207937516819
+      },
+      {
+        "config_id": "S5_Router_Eco",
+        "label": "ParetoRouter-Eco",
+        "accuracy": 0.9134444444444446,
+        "mean_tokens": 1666.4251593688462,
+        "delta_accuracy_pp": 6.46111111111114,
+        "delta_tokens": 527.4001057697735,
+        "marginal_pp_per_1k_tokens": 12.250871853127036
+      },
+      {
+        "config_id": "S5_Router_Balanced",
+        "label": "ParetoRouter-Balanced",
+        "accuracy": 0.9238888888888888,
+        "mean_tokens": 1959.9904179959678,
+        "delta_accuracy_pp": 1.0444444444444145,
+        "delta_tokens": 293.5652586271217,
+        "marginal_pp_per_1k_tokens": 3.557793075818411
+      },
+      {
+        "config_id": "S5_Router_Strict",
+        "label": "ParetoRouter-Strict",
+        "accuracy": 0.9585000000000001,
+        "mean_tokens": 3309.780681836884,
+        "delta_accuracy_pp": 3.461111111111137,
+        "delta_tokens": 1349.7902638409162,
+        "marginal_pp_per_1k_tokens": 2.5641843802179456
+      },
+      {
+        "config_id": "S3_GV3_Frontier_ToolVer",
+        "label": "GenVerify@3 (Frontier + ToolVer)",
+        "accuracy": 0.9663333333333333,
+        "mean_tokens": 4016.004442357458,
+        "delta_accuracy_pp": 0.7833333333333137,
+        "delta_tokens": 706.2237605205742,
+        "marginal_pp_per_1k_tokens": 1.1091857526230784
+      },
+      {
+        "config_id": "S4_Debate_Hetero_ToolJudge",
+        "label": "DebateDAG (Frontier+Reasoning + ToolJudge)",
+        "accuracy": 0.9750555555555553,
+        "mean_tokens": 8875.37734729781,
+        "delta_accuracy_pp": 0.8722222222222076,
+        "delta_tokens": 4859.372904940352,
+        "marginal_pp_per_1k_tokens": 0.17949275334178413
+      }
+    ],
+    "budget_constrained_selections": {
+      "budget_600_tok": "S1_Fast",
+      "budget_1200_tok": "S5_Router_Lite",
+      "budget_2200_tok": "S5_Router_Balanced",
+      "budget_3200_tok": "S5_Router_Balanced",
+      "budget_5000_tok": "S3_GV3_Frontier_ToolVer"
+    },
+    "router_vs_static_savings": {
+      "S5_Router_Eco": {
+        "router_label": "ParetoRouter-Eco",
+        "router_accuracy": 0.9134444444444446,
+        "router_tokens": 1666.4251593688462,
+        "router_p95_ms": 2404.6253513439815,
+        "matched_static_id": "S3_GV1_Frontier_ToolVer",
+        "matched_static_label": "GenVerify@1 (Frontier + ToolVer)",
+        "matched_static_accuracy": 0.9165000000000001,
+        "matched_static_tokens": 3483.7512187348357,
+        "matched_static_p95_ms": 3247.787131170964,
+        "token_savings_pct": 52.165781804189,
+        "p95_latency_reduction_pct": 25.961115854381354
+      },
+      "S5_Router_Balanced": {
+        "router_label": "ParetoRouter-Balanced",
+        "router_accuracy": 0.9238888888888888,
+        "router_tokens": 1959.9904179959678,
+        "router_p95_ms": 2311.5070542935932,
+        "matched_static_id": "S3_GV3_Frontier_ToolVer",
+        "matched_static_label": "GenVerify@3 (Frontier + ToolVer)",
+        "matched_static_accuracy": 0.9663333333333333,
+        "matched_static_tokens": 4016.004442357458,
+        "matched_static_p95_ms": 5160.043248136653,
+        "token_savings_pct": 51.19551170502634,
+        "p95_latency_reduction_pct": 55.20372711743641
+      },
+      "S5_Router_Strict": {
+        "router_label": "ParetoRouter-Strict",
+        "router_accuracy": 0.9585000000000001,
+        "router_tokens": 3309.780681836884,
+        "router_p95_ms": 3592.9217761393147,
+        "matched_static_id": "S3_GV3_Frontier_ToolVer",
+        "matched_static_label": "GenVerify@3 (Frontier + ToolVer)",
+        "matched_static_accuracy": 0.9663333333333333,
+        "matched_static_tokens": 4016.004442357458,
+        "matched_static_p95_ms": 5160.043248136653,
+        "token_savings_pct": 17.585233548845626,
+        "p95_latency_reduction_pct": 30.370316616304383
+      }
+    }
+  },
+  "markov_validation": {
+    "max_monte_carlo_abs_error": 0.0017650646937568126,
+    "max_benchmark_s3_abs_error": 0.004236649999999953,
+    "passes_half_percent_bound": true,
+    "canonical_regime_rollouts": [
+      {
+        "T": 1.0,
+        "early_stop": 1.0,
+        "n_trials": 60000.0,
+        "analytical_accuracy": 0.781701,
+        "empirical_accuracy": 0.7809666666666667,
+        "abs_accuracy_error": 0.0007343333333332813,
+        "analytical_cost": 1918.624,
+        "empirical_cost": 1920.484,
+        "rel_cost_error": 0.000969444768750886,
+        "analytical_ver_calls": 1.0,
+        "empirical_ver_calls": 1.0,
+        "analytical_rep_calls": 0.3376,
+        "empirical_rep_calls": 0.3391,
+        "regime": "StrongGen_WeakVer_T1_Early",
+        "one_step_gain_pp": -4.829899999999996,
+        "stationary_accuracy": 0.8182514187531201
+      },
+      {
+        "T": 3.0,
+        "early_stop": 0.0,
+        "n_trials": 60000.0,
+        "analytical_accuracy": 0.7369483980270901,
+        "empirical_accuracy": 0.7351833333333333,
+        "abs_accuracy_error": 0.0017650646937568126,
+        "analytical_cost": 3479.21590126416,
+        "empirical_cost": 3484.2733333333335,
+        "rel_cost_error": 0.0014536125991307129,
+        "analytical_ver_calls": 3.0,
+        "empirical_ver_calls": 3.0,
+        "analytical_rep_calls": 1.047754759084,
+        "empirical_rep_calls": 1.0518333333333334,
+        "regime": "StrongGen_WeakVer_T3_Homog",
+        "one_step_gain_pp": -4.829899999999996,
+        "stationary_accuracy": 0.7137009390801832
+      },
+      {
+        "T": 2.0,
+        "early_stop": 1.0,
+        "n_trials": 60000.0,
+        "analytical_accuracy": 0.909480773125,
+        "empirical_accuracy": 0.9105833333333333,
+        "abs_accuracy_error": 0.0011025602083333252,
+        "analytical_cost": 1840.585801875,
+        "empirical_cost": 1840.2871666666665,
+        "rel_cost_error": 0.00016225008800420433,
+        "analytical_ver_calls": 1.25425,
+        "empirical_ver_calls": 1.2543666666666666,
+        "analytical_rep_calls": 0.33211068750000006,
+        "empirical_rep_calls": 0.33158333333333334,
+        "regime": "MidGen_CalibVer_T2_Early",
+        "one_step_gain_pp": 13.569749999999999,
+        "stationary_accuracy": 0.9290742964242831
+      },
+      {
+        "T": 1.0,
+        "early_stop": 1.0,
+        "n_trials": 60000.0,
+        "analytical_accuracy": 0.9605342,
+        "empirical_accuracy": 0.9590833333333333,
+        "abs_accuracy_error": 0.001450866666666717,
+        "analytical_cost": 2066.9448,
+        "empirical_cost": 2068.7386666666666,
+        "rel_cost_error": 0.0008678831997189366,
+        "analytical_ver_calls": 1.0,
+        "empirical_ver_calls": 1.0,
+        "analytical_rep_calls": 0.18302000000000007,
+        "empirical_rep_calls": 0.18446666666666667,
+        "regime": "Frontier_ToolVer_T1_Early",
+        "one_step_gain_pp": 13.053420000000004,
+        "stationary_accuracy": 0.9867241060979527
+      },
+      {
+        "T": 3.0,
+        "early_stop": 1.0,
+        "n_trials": 60000.0,
+        "analytical_accuracy": 0.9859656955053759,
+        "empirical_accuracy": 0.9862333333333333,
+        "abs_accuracy_error": 0.0002676378279573566,
+        "analytical_cost": 2257.569733756765,
+        "empirical_cost": 2257.174,
+        "rel_cost_error": 0.00017529193045407346,
+        "analytical_ver_calls": 1.2140722948,
+        "empirical_ver_calls": 1.2135,
+        "analytical_rep_calls": 0.2193553010425521,
+        "empirical_rep_calls": 0.21935,
+        "regime": "Frontier_ToolVer_T3_Early",
+        "one_step_gain_pp": 13.053420000000004,
+        "stationary_accuracy": 0.9867241060979527
+      },
+      {
+        "T": 5.0,
+        "early_stop": 0.0,
+        "n_trials": 60000.0,
+        "analytical_accuracy": 0.8901006752258994,
+        "empirical_accuracy": 0.8916333333333334,
+        "abs_accuracy_error": 0.0015326581074339707,
+        "analytical_cost": 3495.5862591063537,
+        "empirical_cost": 3492.378166666667,
+        "rel_cost_error": 0.0009177551923742336,
+        "analytical_ver_calls": 5.0,
+        "empirical_ver_calls": 5.0,
+        "analytical_rep_calls": 1.3063079490398875,
+        "empirical_rep_calls": 1.2984833333333334,
+        "regime": "WeakGen_MidVer_T5_Homog",
+        "one_step_gain_pp": 16.025999999999996,
+        "stationary_accuracy": 0.9086839749328558
+      }
+    ],
+    "s3_benchmark_validation": [
+      {
+        "config_id": "S3_GV1_Frontier_WeakVer",
+        "label": "GenVerify@1 (Frontier + WeakVer)",
+        "analytical_accuracy": 0.7444848,
+        "empirical_accuracy": 0.7484444444444445,
+        "abs_accuracy_error": 0.003959644444444521,
+        "by_difficulty_analytical": {
+          "easy": 0.8660927999999999,
+          "medium": 0.7726930999999999,
+          "hard": 0.5946684999999999
+        }
+      },
+      {
+        "config_id": "S3_GV3_Frontier_WeakVer_Homog",
+        "label": "GenVerify@3-Homog (Frontier + WeakVer)",
+        "analytical_accuracy": 0.6961427160559227,
+        "empirical_accuracy": 0.6974444444444446,
+        "abs_accuracy_error": 0.0013017283885219388,
+        "by_difficulty_analytical": {
+          "easy": 0.7932658147830067,
+          "medium": 0.7178586463205202,
+          "hard": 0.5773036870642412
+        }
+      },
+      {
+        "config_id": "S3_GV1_Fast_MidVer",
+        "label": "GenVerify@1 (Fast + MidVer)",
+        "analytical_accuracy": 0.6204300166666668,
+        "empirical_accuracy": 0.6246666666666667,
+        "abs_accuracy_error": 0.004236649999999953,
+        "by_difficulty_analytical": {
+          "easy": 0.90075525,
+          "medium": 0.63895,
+          "hard": 0.32158480000000006
+        }
+      },
+      {
+        "config_id": "S3_GV2_Mid_MidVer",
+        "label": "GenVerify@2 (Mid + MidVer)",
+        "analytical_accuracy": 0.8000372767993332,
+        "empirical_accuracy": 0.7998333333333334,
+        "abs_accuracy_error": 0.00020394346599983404,
+        "by_difficulty_analytical": {
+          "easy": 0.96164149835,
+          "medium": 0.838364706984,
+          "hard": 0.600105625064
+        }
+      },
+      {
+        "config_id": "S3_GV1_Mid_CalibVer",
+        "label": "GenVerify@1 (Mid + CalibVer)",
+        "analytical_accuracy": 0.8139494216666665,
+        "empirical_accuracy": 0.8116111111111111,
+        "abs_accuracy_error": 0.002338310555555445,
+        "by_difficulty_analytical": {
+          "easy": 0.9723566499999999,
+          "medium": 0.8539821149999999,
+          "hard": 0.6155095
+        }
+      },
+      {
+        "config_id": "S3_GV2_Mid_CalibVer",
+        "label": "GenVerify@2 (Mid + CalibVer)",
+        "analytical_accuracy": 0.8567174221535117,
+        "empirical_accuracy": 0.8560555555555557,
+        "abs_accuracy_error": 0.0006618665979559735,
+        "by_difficulty_analytical": {
+          "easy": 0.9841089394735,
+          "medium": 0.898235909399535,
+          "hard": 0.6878074175875
+        }
+      },
+      {
+        "config_id": "S3_GV2_Frontier_CalibVer",
+        "label": "GenVerify@2 (Frontier + CalibVer)",
+        "analytical_accuracy": 0.9157470009826932,
+        "empirical_accuracy": 0.9117222222222223,
+        "abs_accuracy_error": 0.004024778760470915,
+        "by_difficulty_analytical": {
+          "easy": 0.9907958925039999,
+          "medium": 0.94486549966283,
+          "hard": 0.81157961078125
+        }
+      },
+      {
+        "config_id": "S3_GV1_Frontier_ToolVer",
+        "label": "GenVerify@1 (Frontier + ToolVer)",
+        "analytical_accuracy": 0.919923156,
+        "empirical_accuracy": 0.9165000000000001,
+        "abs_accuracy_error": 0.0034231559999998717,
+        "by_difficulty_analytical": {
+          "easy": 0.9928814159999999,
+          "medium": 0.950579522,
+          "hard": 0.81630853
+        }
+      },
+      {
+        "config_id": "S3_GV3_Frontier_ToolVer",
+        "label": "GenVerify@3 (Frontier + ToolVer)",
+        "analytical_accuracy": 0.9681777748345903,
+        "empirical_accuracy": 0.9663333333333333,
+        "abs_accuracy_error": 0.0018444415012570659,
+        "by_difficulty_analytical": {
+          "easy": 0.9977071288485158,
+          "medium": 0.9836118016864713,
+          "hard": 0.9232143939687841
+        }
+      }
+    ]
+  },
+  "configurations": [
+    {
+      "config_id": "S1_Fast",
+      "label": "SinglePass (Fast-8B)",
+      "topology_family": "S1_SinglePass",
+      "accuracy": 0.5579999999999999,
+      "mean_tokens": 418.8389734282782,
+      "p50_latency_ms": 234.79003241716723,
+      "p95_latency_ms": 335.54812824613924,
+      "accuracy_std": 0.03606744316438319,
+      "easy_accuracy": 0.885,
+      "medium_accuracy": 0.5423333333333333,
+      "hard_accuracy": 0.24666666666666667,
+      "metadata": {
+        "mean_llm_calls": 1.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 367.54083655346386,
+          "medium": 411.32703194440387,
+          "hard": 477.64905178696677
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.572,
+          "scientific_symbolic": 0.5408333333333334,
+          "evidence_crosscheck": 0.5611666666666667
+        },
+        "tokens_by_domain": {
+          "code_patch": 404.50378475002714,
+          "scientific_symbolic": 397.7161020002819,
+          "evidence_crosscheck": 454.29703353452544
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": true,
+      "is_static_pareto_2d": true,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S1_Mid",
+      "label": "SinglePass (Mid-32B)",
+      "topology_family": "S1_SinglePass",
+      "accuracy": 0.7120555555555557,
+      "mean_tokens": 748.8120328141359,
+      "p50_latency_ms": 511.5986094577888,
+      "p95_latency_ms": 754.7921416772444,
+      "accuracy_std": 0.028372477965863886,
+      "easy_accuracy": 0.9355,
+      "medium_accuracy": 0.7358333333333333,
+      "hard_accuracy": 0.4648333333333333,
+      "metadata": {
+        "mean_llm_calls": 1.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 697.3306675147289,
+          "medium": 741.0566486266656,
+          "hard": 808.0487823010134
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.7283333333333334,
+          "scientific_symbolic": 0.7095,
+          "evidence_crosscheck": 0.6983333333333334
+        },
+        "tokens_by_domain": {
+          "code_patch": 735.3536021368072,
+          "scientific_symbolic": 727.3685192384329,
+          "evidence_crosscheck": 783.7139770671679
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": true,
+      "is_static_pareto_2d": true,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S1_Frontier",
+      "label": "SinglePass (Frontier-70B)",
+      "topology_family": "S1_SinglePass",
+      "accuracy": 0.7970000000000002,
+      "mean_tokens": 1678.534927959099,
+      "p50_latency_ms": 1017.3889681276305,
+      "p95_latency_ms": 1574.088274052578,
+      "accuracy_std": 0.0275967162986403,
+      "easy_accuracy": 0.9578333333333333,
+      "medium_accuracy": 0.825,
+      "hard_accuracy": 0.6081666666666666,
+      "metadata": {
+        "mean_llm_calls": 1.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 1628.737780268638,
+          "medium": 1669.7160211023483,
+          "hard": 1737.1509825063106
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.8136666666666666,
+          "scientific_symbolic": 0.7986666666666666,
+          "evidence_crosscheck": 0.7786666666666666
+        },
+        "tokens_by_domain": {
+          "code_patch": 1663.4261243225765,
+          "scientific_symbolic": 1658.318122151129,
+          "evidence_crosscheck": 1713.8605374035917
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": true,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S1_Reasoning",
+      "label": "SinglePass (Reasoning-Pro)",
+      "topology_family": "S1_SinglePass",
+      "accuracy": 0.8577222222222223,
+      "mean_tokens": 3300.0100995551625,
+      "p50_latency_ms": 2140.677239482672,
+      "p95_latency_ms": 3406.4440481625197,
+      "accuracy_std": 0.02784945857974506,
+      "easy_accuracy": 0.9773333333333334,
+      "medium_accuracy": 0.8795,
+      "hard_accuracy": 0.7163333333333334,
+      "metadata": {
+        "mean_llm_calls": 1.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 3248.090791984507,
+          "medium": 3297.120505669221,
+          "hard": 3354.81900101176
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.8661666666666666,
+          "scientific_symbolic": 0.874,
+          "evidence_crosscheck": 0.833
+        },
+        "tokens_by_domain": {
+          "code_patch": 3285.1630923703287,
+          "scientific_symbolic": 3275.700060200393,
+          "evidence_crosscheck": 3339.167146094766
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": true,
+      "pareto_rank_3d": 2,
+      "is_pareto_3d": false
+    },
+    {
+      "config_id": "S2_SC3_Fast",
+      "label": "SC@3 (Fast-8B)",
+      "topology_family": "S2_SelfConsistency",
+      "accuracy": 0.699,
+      "mean_tokens": 1255.4952023157214,
+      "p50_latency_ms": 300.65355463583484,
+      "p95_latency_ms": 393.850813083328,
+      "accuracy_std": 0.029273746573230425,
+      "easy_accuracy": 0.9828333333333333,
+      "medium_accuracy": 0.7496666666666667,
+      "hard_accuracy": 0.3645,
+      "metadata": {
+        "mean_llm_calls": 3.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 1102.8234451019541,
+          "medium": 1231.6084839541684,
+          "hard": 1432.053677891042
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.7118333333333333,
+          "scientific_symbolic": 0.6898333333333333,
+          "evidence_crosscheck": 0.6953333333333334
+        },
+        "tokens_by_domain": {
+          "code_patch": 1214.7895520425259,
+          "scientific_symbolic": 1191.2861156147665,
+          "evidence_crosscheck": 1360.4099392898725
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S2_SC5_Fast",
+      "label": "SC@5 (Fast-8B)",
+      "topology_family": "S2_SelfConsistency",
+      "accuracy": 0.7101666666666666,
+      "mean_tokens": 2092.9934078084566,
+      "p50_latency_ms": 325.7611548670057,
+      "p95_latency_ms": 417.13878118705713,
+      "accuracy_std": 0.027285823226462835,
+      "easy_accuracy": 0.9971666666666666,
+      "medium_accuracy": 0.8191666666666667,
+      "hard_accuracy": 0.31416666666666665,
+      "metadata": {
+        "mean_llm_calls": 5.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 1838.343019284331,
+          "medium": 2053.502903566961,
+          "hard": 2387.134300574078
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.7225,
+          "scientific_symbolic": 0.6981666666666667,
+          "evidence_crosscheck": 0.7098333333333333
+        },
+        "tokens_by_domain": {
+          "code_patch": 2026.9019896498226,
+          "scientific_symbolic": 1983.8209436451643,
+          "evidence_crosscheck": 2268.2572901303824
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S2_SC7_Fast",
+      "label": "SC@7 (Fast-8B)",
+      "topology_family": "S2_SelfConsistency",
+      "accuracy": 0.7321666666666665,
+      "mean_tokens": 2931.6222473924236,
+      "p50_latency_ms": 342.98575895988876,
+      "p95_latency_ms": 430.3646447405305,
+      "accuracy_std": 0.026570803656147342,
+      "easy_accuracy": 0.9996666666666667,
+      "medium_accuracy": 0.8741666666666666,
+      "hard_accuracy": 0.32266666666666666,
+      "metadata": {
+        "mean_llm_calls": 7.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 2573.334237468526,
+          "medium": 2876.82098130514,
+          "hard": 3344.711523403605
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.7383333333333333,
+          "scientific_symbolic": 0.7206666666666667,
+          "evidence_crosscheck": 0.7375
+        },
+        "tokens_by_domain": {
+          "code_patch": 2839.474972655905,
+          "scientific_symbolic": 2780.8523774488,
+          "evidence_crosscheck": 3174.539392072565
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S2_SC9_Fast",
+      "label": "SC@9 (Fast-8B)",
+      "topology_family": "S2_SelfConsistency",
+      "accuracy": 0.7407222222222223,
+      "mean_tokens": 3768.5889591781233,
+      "p50_latency_ms": 357.60234062296786,
+      "p95_latency_ms": 446.0706361168892,
+      "accuracy_std": 0.021320875875495048,
+      "easy_accuracy": 0.9996666666666667,
+      "medium_accuracy": 0.9116666666666666,
+      "hard_accuracy": 0.31083333333333335,
+      "metadata": {
+        "mean_llm_calls": 9.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 3307.994485367766,
+          "medium": 3698.8177184795923,
+          "hard": 4298.954673687011
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.755,
+          "scientific_symbolic": 0.7286666666666667,
+          "evidence_crosscheck": 0.7385
+        },
+        "tokens_by_domain": {
+          "code_patch": 3649.167681042988,
+          "scientific_symbolic": 3574.1193644950117,
+          "evidence_crosscheck": 4082.47983199637
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S2_SC3_Mid",
+      "label": "SC@3 (Mid-32B)",
+      "topology_family": "S2_SelfConsistency",
+      "accuracy": 0.8543333333333331,
+      "mean_tokens": 2245.4143648231056,
+      "p50_latency_ms": 641.5550528179433,
+      "p95_latency_ms": 866.0326348008565,
+      "accuracy_std": 0.019399579473563112,
+      "easy_accuracy": 0.9956666666666667,
+      "medium_accuracy": 0.911,
+      "hard_accuracy": 0.6563333333333333,
+      "metadata": {
+        "mean_llm_calls": 3.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 2093.4429814126356,
+          "medium": 2221.083599851139,
+          "hard": 2421.71651320554
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.8661666666666666,
+          "scientific_symbolic": 0.8531666666666666,
+          "evidence_crosscheck": 0.8436666666666667
+        },
+        "tokens_by_domain": {
+          "code_patch": 2206.6534201427116,
+          "scientific_symbolic": 2178.24850795093,
+          "evidence_crosscheck": 2351.3411663756733
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": true,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S2_SC5_Mid",
+      "label": "SC@5 (Mid-32B)",
+      "topology_family": "S2_SelfConsistency",
+      "accuracy": 0.8945000000000002,
+      "mean_tokens": 3743.7339238178565,
+      "p50_latency_ms": 694.3352273434407,
+      "p95_latency_ms": 913.0278934141767,
+      "accuracy_std": 0.023550311234605558,
+      "easy_accuracy": 0.9995,
+      "medium_accuracy": 0.9676666666666667,
+      "hard_accuracy": 0.7163333333333334,
+      "metadata": {
+        "mean_llm_calls": 5.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 3488.1316884269763,
+          "medium": 3704.3104938155166,
+          "hard": 4038.7595892110767
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.8931666666666667,
+          "scientific_symbolic": 0.9021666666666667,
+          "evidence_crosscheck": 0.8881666666666667
+        },
+        "tokens_by_domain": {
+          "code_patch": 3677.196468295101,
+          "scientific_symbolic": 3637.2769861387087,
+          "evidence_crosscheck": 3916.72831701976
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S2_SC7_Mid",
+      "label": "SC@7 (Mid-32B)",
+      "topology_family": "S2_SelfConsistency",
+      "accuracy": 0.9156111111111112,
+      "mean_tokens": 5239.808578542601,
+      "p50_latency_ms": 728.5582759026405,
+      "p95_latency_ms": 945.8970791735084,
+      "accuracy_std": 0.01915887787219963,
+      "easy_accuracy": 0.9996666666666667,
+      "medium_accuracy": 0.9875,
+      "hard_accuracy": 0.7596666666666667,
+      "metadata": {
+        "mean_llm_calls": 7.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 4881.157512471042,
+          "medium": 5186.666307573934,
+          "hard": 5651.601915582825
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.9235,
+          "scientific_symbolic": 0.9151666666666667,
+          "evidence_crosscheck": 0.9081666666666667
+        },
+        "tokens_by_domain": {
+          "code_patch": 5145.228892609398,
+          "scientific_symbolic": 5088.5163969831565,
+          "evidence_crosscheck": 5485.680446035248
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S2_SC5_Frontier",
+      "label": "SC@5 (Frontier-70B)",
+      "topology_family": "S2_SelfConsistency",
+      "accuracy": 0.9629444444444445,
+      "mean_tokens": 8395.271798682528,
+      "p50_latency_ms": 1391.207031617465,
+      "p95_latency_ms": 1882.6172493589843,
+      "accuracy_std": 0.012879844150253901,
+      "easy_accuracy": 1.0,
+      "medium_accuracy": 0.992,
+      "hard_accuracy": 0.8968333333333334,
+      "metadata": {
+        "mean_llm_calls": 5.0,
+        "mean_verifier_calls": 0.0,
+        "mean_repair_calls": 0.0,
+        "mean_dag_depth": 1.0,
+        "tokens_by_difficulty": {
+          "easy": 8138.360009991111,
+          "medium": 8355.035863534913,
+          "hard": 8692.41952252156
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.9663333333333334,
+          "scientific_symbolic": 0.9655,
+          "evidence_crosscheck": 0.957
+        },
+        "tokens_by_domain": {
+          "code_patch": 8330.241080587748,
+          "scientific_symbolic": 8288.387449239564,
+          "evidence_crosscheck": 8567.18686622027
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S3_GV1_Frontier_WeakVer",
+      "label": "GenVerify@1 (Frontier + WeakVer)",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.7484444444444445,
+      "mean_tokens": 2942.750339634493,
+      "p50_latency_ms": 1565.392123494942,
+      "p95_latency_ms": 2936.8438445268084,
+      "accuracy_std": 0.027626749924402238,
+      "easy_accuracy": 0.8628333333333333,
+      "medium_accuracy": 0.7856666666666666,
+      "hard_accuracy": 0.5968333333333333,
+      "metadata": {
+        "mean_llm_calls": 2.3424444444444443,
+        "mean_verifier_calls": 1.0,
+        "mean_repair_calls": 0.34244444444444444,
+        "mean_dag_depth": 2.3424444444444443,
+        "tokens_by_difficulty": {
+          "easy": 2728.841507915725,
+          "medium": 2914.052808481315,
+          "hard": 3185.356702506438
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.766,
+          "scientific_symbolic": 0.7498333333333334,
+          "evidence_crosscheck": 0.7295
+        },
+        "tokens_by_domain": {
+          "code_patch": 2896.5651924844547,
+          "scientific_symbolic": 2904.056249960929,
+          "evidence_crosscheck": 3027.6295764580946
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 3,
+      "is_pareto_3d": false
+    },
+    {
+      "config_id": "S3_GV3_Frontier_WeakVer_Homog",
+      "label": "GenVerify@3-Homog (Frontier + WeakVer)",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.6974444444444446,
+      "mean_tokens": 5565.868783248433,
+      "p50_latency_ms": 3150.820706530483,
+      "p95_latency_ms": 5232.501558355284,
+      "accuracy_std": 0.0330555201878542,
+      "easy_accuracy": 0.791,
+      "medium_accuracy": 0.7145,
+      "hard_accuracy": 0.5868333333333333,
+      "metadata": {
+        "mean_llm_calls": 5.081888888888889,
+        "mean_verifier_calls": 3.0,
+        "mean_repair_calls": 1.081888888888889,
+        "mean_dag_depth": 5.081888888888889,
+        "tokens_by_difficulty": {
+          "easy": 5056.9217157012135,
+          "medium": 5546.21874090939,
+          "hard": 6094.465893134693
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.7106666666666667,
+          "scientific_symbolic": 0.6935,
+          "evidence_crosscheck": 0.6881666666666667
+        },
+        "tokens_by_domain": {
+          "code_patch": 5463.238146265942,
+          "scientific_symbolic": 5488.586663159742,
+          "evidence_crosscheck": 5745.781540319612
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 4,
+      "is_pareto_3d": false
+    },
+    {
+      "config_id": "S3_GV1_Fast_MidVer",
+      "label": "GenVerify@1 (Fast + MidVer)",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.6246666666666667,
+      "mean_tokens": 1529.1324370911796,
+      "p50_latency_ms": 802.8657932246534,
+      "p95_latency_ms": 1155.6615018420762,
+      "accuracy_std": 0.031598317558499005,
+      "easy_accuracy": 0.902,
+      "medium_accuracy": 0.6455,
+      "hard_accuracy": 0.3265,
+      "metadata": {
+        "mean_llm_calls": 2.3489444444444443,
+        "mean_verifier_calls": 1.0,
+        "mean_repair_calls": 0.34894444444444445,
+        "mean_dag_depth": 2.3489444444444443,
+        "tokens_by_difficulty": {
+          "easy": 1323.0355716619479,
+          "medium": 1521.130371486283,
+          "hard": 1743.231368125309
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.642,
+          "scientific_symbolic": 0.6125,
+          "evidence_crosscheck": 0.6195
+        },
+        "tokens_by_domain": {
+          "code_patch": 1495.099892231831,
+          "scientific_symbolic": 1482.0264331701771,
+          "evidence_crosscheck": 1610.2709858715314
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 2,
+      "is_pareto_3d": false
+    },
+    {
+      "config_id": "S3_GV2_Mid_MidVer",
+      "label": "GenVerify@2 (Mid + MidVer)",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.7998333333333334,
+      "mean_tokens": 2249.0241288696625,
+      "p50_latency_ms": 1085.798724615344,
+      "p95_latency_ms": 2646.5986201587016,
+      "accuracy_std": 0.03516706072264651,
+      "easy_accuracy": 0.9655,
+      "medium_accuracy": 0.8286666666666667,
+      "hard_accuracy": 0.6053333333333333,
+      "metadata": {
+        "mean_llm_calls": 2.6289444444444445,
+        "mean_verifier_calls": 1.263111111111111,
+        "mean_repair_calls": 0.36583333333333334,
+        "mean_dag_depth": 2.6289444444444445,
+        "tokens_by_difficulty": {
+          "easy": 1824.872908685426,
+          "medium": 2218.2231816541384,
+          "hard": 2703.976296269423
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.8001666666666667,
+          "scientific_symbolic": 0.795,
+          "evidence_crosscheck": 0.8043333333333333
+        },
+        "tokens_by_domain": {
+          "code_patch": 2197.2884461277495,
+          "scientific_symbolic": 2194.7402427687903,
+          "evidence_crosscheck": 2355.043697712448
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 2,
+      "is_pareto_3d": false
+    },
+    {
+      "config_id": "S3_GV1_Mid_CalibVer",
+      "label": "GenVerify@1 (Mid + CalibVer)",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.8116111111111111,
+      "mean_tokens": 2447.0981131495073,
+      "p50_latency_ms": 1424.4904702866138,
+      "p95_latency_ms": 2141.943788633664,
+      "accuracy_std": 0.03002778569433568,
+      "easy_accuracy": 0.9746666666666667,
+      "medium_accuracy": 0.8468333333333333,
+      "hard_accuracy": 0.6133333333333333,
+      "metadata": {
+        "mean_llm_calls": 2.2586666666666666,
+        "mean_verifier_calls": 1.0,
+        "mean_repair_calls": 0.25866666666666666,
+        "mean_dag_depth": 2.2586666666666666,
+        "tokens_by_difficulty": {
+          "easy": 2182.805715460139,
+          "medium": 2423.083278466099,
+          "hard": 2735.405345522284
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.819,
+          "scientific_symbolic": 0.8113333333333334,
+          "evidence_crosscheck": 0.8045
+        },
+        "tokens_by_domain": {
+          "code_patch": 2411.701448556497,
+          "scientific_symbolic": 2400.0146123908603,
+          "evidence_crosscheck": 2529.578278501164
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 2,
+      "is_pareto_3d": false
+    },
+    {
+      "config_id": "S3_GV2_Mid_CalibVer",
+      "label": "GenVerify@2 (Mid + CalibVer)",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.8560555555555557,
+      "mean_tokens": 2910.7063952130834,
+      "p50_latency_ms": 1422.5287297430773,
+      "p95_latency_ms": 3327.8879715779603,
+      "accuracy_std": 0.024556104020567092,
+      "easy_accuracy": 0.9813333333333333,
+      "medium_accuracy": 0.8961666666666667,
+      "hard_accuracy": 0.6906666666666667,
+      "metadata": {
+        "mean_llm_calls": 2.6068333333333333,
+        "mean_verifier_calls": 1.253111111111111,
+        "mean_repair_calls": 0.3537222222222222,
+        "mean_dag_depth": 2.6068333333333333,
+        "tokens_by_difficulty": {
+          "easy": 2326.8084565846275,
+          "medium": 2846.3369349048958,
+          "hard": 3558.973794149726
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.8621666666666666,
+          "scientific_symbolic": 0.8583333333333333,
+          "evidence_crosscheck": 0.8476666666666667
+        },
+        "tokens_by_domain": {
+          "code_patch": 2833.155509809457,
+          "scientific_symbolic": 2875.6144212203585,
+          "evidence_crosscheck": 3023.349254609434
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": true,
+      "pareto_rank_3d": 2,
+      "is_pareto_3d": false
+    },
+    {
+      "config_id": "S3_GV2_Frontier_CalibVer",
+      "label": "GenVerify@2 (Frontier + CalibVer)",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.9117222222222223,
+      "mean_tokens": 3899.1860010721202,
+      "p50_latency_ms": 1939.1197359760927,
+      "p95_latency_ms": 4565.925867342148,
+      "accuracy_std": 0.01986509872615601,
+      "easy_accuracy": 0.9908333333333333,
+      "medium_accuracy": 0.939,
+      "hard_accuracy": 0.8053333333333333,
+      "metadata": {
+        "mean_llm_calls": 2.4369444444444444,
+        "mean_verifier_calls": 1.1901666666666666,
+        "mean_repair_calls": 0.2467777777777778,
+        "mean_dag_depth": 2.4369444444444444,
+        "tokens_by_difficulty": {
+          "easy": 3258.798268484364,
+          "medium": 3803.1583411736146,
+          "hard": 4635.601393558384
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.9138333333333334,
+          "scientific_symbolic": 0.916,
+          "evidence_crosscheck": 0.9053333333333333
+        },
+        "tokens_by_domain": {
+          "code_patch": 3820.790132462559,
+          "scientific_symbolic": 3833.2938377222367,
+          "evidence_crosscheck": 4043.4740330315667
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 3,
+      "is_pareto_3d": false
+    },
+    {
+      "config_id": "S3_GV1_Frontier_ToolVer",
+      "label": "GenVerify@1 (Frontier + ToolVer)",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.9165000000000001,
+      "mean_tokens": 3483.7512187348357,
+      "p50_latency_ms": 1895.9436741805891,
+      "p95_latency_ms": 3247.787131170964,
+      "accuracy_std": 0.01996778487894169,
+      "easy_accuracy": 0.9916666666666667,
+      "medium_accuracy": 0.948,
+      "hard_accuracy": 0.8098333333333333,
+      "metadata": {
+        "mean_llm_calls": 2.2087222222222223,
+        "mean_verifier_calls": 1.0,
+        "mean_repair_calls": 0.20872222222222223,
+        "mean_dag_depth": 2.2087222222222223,
+        "tokens_by_difficulty": {
+          "easy": 3095.768340117872,
+          "medium": 3404.9922463226853,
+          "hard": 3950.4930697639497
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.9213333333333333,
+          "scientific_symbolic": 0.9185,
+          "evidence_crosscheck": 0.9096666666666666
+        },
+        "tokens_by_domain": {
+          "code_patch": 3414.3907899332135,
+          "scientific_symbolic": 3437.5304228612063,
+          "evidence_crosscheck": 3599.3324434100873
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": true,
+      "pareto_rank_3d": 2,
+      "is_pareto_3d": false
+    },
+    {
+      "config_id": "S3_GV3_Frontier_ToolVer",
+      "label": "GenVerify@3 (Frontier + ToolVer)",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.9663333333333333,
+      "mean_tokens": 4016.004442357458,
+      "p50_latency_ms": 1893.8698630436706,
+      "p95_latency_ms": 5160.043248136653,
+      "accuracy_std": 0.012505641575140626,
+      "easy_accuracy": 0.9965,
+      "medium_accuracy": 0.9845,
+      "hard_accuracy": 0.918,
+      "metadata": {
+        "mean_llm_calls": 2.552,
+        "mean_verifier_calls": 1.2655555555555555,
+        "mean_repair_calls": 0.28644444444444445,
+        "mean_dag_depth": 2.552,
+        "tokens_by_difficulty": {
+          "easy": 3179.2405224643667,
+          "medium": 3788.2664296892503,
+          "hard": 5080.506374918759
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.9688333333333333,
+          "scientific_symbolic": 0.9671666666666666,
+          "evidence_crosscheck": 0.963
+        },
+        "tokens_by_domain": {
+          "code_patch": 3964.4854520221265,
+          "scientific_symbolic": 3899.341769470047,
+          "evidence_crosscheck": 4184.186105580201
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": true,
+      "is_static_pareto_2d": true,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S4_Debate_Homog_Mid",
+      "label": "DebateDAG (Homog 2xMid)",
+      "topology_family": "S4_AdversarialDebateDAG",
+      "accuracy": 0.8375000000000001,
+      "mean_tokens": 3917.93341601596,
+      "p50_latency_ms": 1515.5553474445928,
+      "p95_latency_ms": 1918.817361462069,
+      "accuracy_std": 0.02578575624429911,
+      "easy_accuracy": 0.9773333333333334,
+      "medium_accuracy": 0.8805,
+      "hard_accuracy": 0.6546666666666666,
+      "metadata": {
+        "mean_llm_calls": 5.0,
+        "mean_verifier_calls": 2.0,
+        "mean_repair_calls": 1.0,
+        "mean_dag_depth": 3.0,
+        "tokens_by_difficulty": {
+          "easy": 3599.3687546528017,
+          "medium": 3879.3113234932284,
+          "hard": 4275.12016990185
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.843,
+          "scientific_symbolic": 0.8398333333333333,
+          "evidence_crosscheck": 0.8296666666666667
+        },
+        "tokens_by_domain": {
+          "code_patch": 3846.416436739875,
+          "scientific_symbolic": 3815.472152576274,
+          "evidence_crosscheck": 4091.9116587317317
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 2,
+      "is_pareto_3d": false
+    },
+    {
+      "config_id": "S4_Debate_Hetero_MidFrontier",
+      "label": "DebateDAG (Hetero Mid+Frontier)",
+      "topology_family": "S4_AdversarialDebateDAG",
+      "accuracy": 0.9206111111111112,
+      "mean_tokens": 6524.510695239839,
+      "p50_latency_ms": 2663.599742238641,
+      "p95_latency_ms": 3503.4515360827004,
+      "accuracy_std": 0.018691031477368798,
+      "easy_accuracy": 0.9931666666666666,
+      "medium_accuracy": 0.9541666666666667,
+      "hard_accuracy": 0.8145,
+      "metadata": {
+        "mean_llm_calls": 5.0,
+        "mean_verifier_calls": 2.0,
+        "mean_repair_calls": 1.0,
+        "mean_dag_depth": 3.0,
+        "tokens_by_difficulty": {
+          "easy": 6129.01277945228,
+          "medium": 6469.282813360775,
+          "hard": 6975.236492906463
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.9285,
+          "scientific_symbolic": 0.923,
+          "evidence_crosscheck": 0.9103333333333333
+        },
+        "tokens_by_domain": {
+          "code_patch": 6450.039362045653,
+          "scientific_symbolic": 6419.3147708714505,
+          "evidence_crosscheck": 6704.177952802416
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": false,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 2,
+      "is_pareto_3d": false
+    },
+    {
+      "config_id": "S4_Debate_Hetero_ToolJudge",
+      "label": "DebateDAG (Frontier+Reasoning + ToolJudge)",
+      "topology_family": "S4_AdversarialDebateDAG",
+      "accuracy": 0.9750555555555553,
+      "mean_tokens": 8875.37734729781,
+      "p50_latency_ms": 3699.3857618384254,
+      "p95_latency_ms": 5068.593300086215,
+      "accuracy_std": 0.011319455203013484,
+      "easy_accuracy": 0.9986666666666667,
+      "medium_accuracy": 0.99,
+      "hard_accuracy": 0.9365,
+      "metadata": {
+        "mean_llm_calls": 5.0,
+        "mean_verifier_calls": 2.0,
+        "mean_repair_calls": 1.0,
+        "mean_dag_depth": 3.0,
+        "tokens_by_difficulty": {
+          "easy": 8534.14060704429,
+          "medium": 8810.60466222229,
+          "hard": 9281.386772626858
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.9778333333333333,
+          "scientific_symbolic": 0.9778333333333333,
+          "evidence_crosscheck": 0.9695
+        },
+        "tokens_by_domain": {
+          "code_patch": 8809.195632695186,
+          "scientific_symbolic": 8760.427598643626,
+          "evidence_crosscheck": 9056.508810554626
+        },
+        "router_tier_allocation": {},
+        "tier3_shortcircuit_rate": 0.0
+      },
+      "is_pareto_2d": true,
+      "is_static_pareto_2d": true,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S5_Router_Lite",
+      "label": "ParetoRouter-Lite",
+      "topology_family": "S5_ParetoAdaptiveRouter",
+      "accuracy": 0.8488333333333332,
+      "mean_tokens": 1139.0250535990726,
+      "p50_latency_ms": 445.1164740965339,
+      "p95_latency_ms": 1855.3747861840718,
+      "accuracy_std": 0.02627583734883803,
+      "easy_accuracy": 0.9696666666666667,
+      "medium_accuracy": 0.8676666666666667,
+      "hard_accuracy": 0.7091666666666666,
+      "metadata": {
+        "mean_llm_calls": 1.4734444444444443,
+        "mean_verifier_calls": 0.09616666666666666,
+        "mean_repair_calls": 0.19922222222222222,
+        "mean_dag_depth": 1.3623333333333334,
+        "tokens_by_difficulty": {
+          "easy": 445.9785816603268,
+          "medium": 876.6942648055202,
+          "hard": 2094.402314331371
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.828,
+          "scientific_symbolic": 0.8273333333333334,
+          "evidence_crosscheck": 0.8911666666666667
+        },
+        "tokens_by_domain": {
+          "code_patch": 870.2582545748834,
+          "scientific_symbolic": 866.4501472379832,
+          "evidence_crosscheck": 1680.366758984352
+        },
+        "router_tier_allocation": {
+          "easy": {
+            "tier1_fast": 0.9463333333333334,
+            "tier2_verified": 0.05366666666666667,
+            "tier3_hetero_debate": 0.0
+          },
+          "medium": {
+            "tier1_fast": 0.5195,
+            "tier2_verified": 0.4805,
+            "tier3_hetero_debate": 0.0
+          },
+          "hard": {
+            "tier1_fast": 0.0,
+            "tier2_verified": 0.6666666666666666,
+            "tier3_hetero_debate": 0.3333333333333333
+          }
+        },
+        "tier3_shortcircuit_rate": 0.3135
+      },
+      "is_pareto_2d": true,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S5_Router_Eco",
+      "label": "ParetoRouter-Eco",
+      "topology_family": "S5_ParetoAdaptiveRouter",
+      "accuracy": 0.9134444444444446,
+      "mean_tokens": 1666.4251593688462,
+      "p50_latency_ms": 704.7233992583901,
+      "p95_latency_ms": 2404.6253513439815,
+      "accuracy_std": 0.021161261243806035,
+      "easy_accuracy": 0.9838333333333333,
+      "medium_accuracy": 0.9308333333333333,
+      "hard_accuracy": 0.8256666666666667,
+      "metadata": {
+        "mean_llm_calls": 1.795388888888889,
+        "mean_verifier_calls": 0.15233333333333332,
+        "mean_repair_calls": 0.1676111111111111,
+        "mean_dag_depth": 1.4451666666666667,
+        "tokens_by_difficulty": {
+          "easy": 515.1540197716829,
+          "medium": 1569.742052511733,
+          "hard": 2914.3794058231233
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.9248333333333333,
+          "scientific_symbolic": 0.8903333333333333,
+          "evidence_crosscheck": 0.9251666666666667
+        },
+        "tokens_by_domain": {
+          "code_patch": 1544.5322053737934,
+          "scientific_symbolic": 1153.8836144718493,
+          "evidence_crosscheck": 2300.859658260896
+        },
+        "router_tier_allocation": {
+          "easy": {
+            "tier1_fast": 0.8821666666666667,
+            "tier2_verified": 0.11783333333333333,
+            "tier3_hetero_debate": 0.0
+          },
+          "medium": {
+            "tier1_fast": 0.4595,
+            "tier2_verified": 0.20016666666666666,
+            "tier3_hetero_debate": 0.3403333333333333
+          },
+          "hard": {
+            "tier1_fast": 0.0,
+            "tier2_verified": 0.2896666666666667,
+            "tier3_hetero_debate": 0.7103333333333334
+          }
+        },
+        "tier3_shortcircuit_rate": 0.39958756345177665
+      },
+      "is_pareto_2d": true,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S5_Router_Balanced",
+      "label": "ParetoRouter-Balanced",
+      "topology_family": "S5_ParetoAdaptiveRouter",
+      "accuracy": 0.9238888888888888,
+      "mean_tokens": 1959.9904179959678,
+      "p50_latency_ms": 757.934384428188,
+      "p95_latency_ms": 2311.5070542935932,
+      "accuracy_std": 0.01847638304067166,
+      "easy_accuracy": 0.9813333333333333,
+      "medium_accuracy": 0.931,
+      "hard_accuracy": 0.8593333333333333,
+      "metadata": {
+        "mean_llm_calls": 1.7722222222222221,
+        "mean_verifier_calls": 0.152,
+        "mean_repair_calls": 0.14994444444444444,
+        "mean_dag_depth": 1.421888888888889,
+        "tokens_by_difficulty": {
+          "easy": 529.2795108141647,
+          "medium": 1865.7323509290052,
+          "hard": 3484.959392244734
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.931,
+          "scientific_symbolic": 0.8916666666666667,
+          "evidence_crosscheck": 0.949
+        },
+        "tokens_by_domain": {
+          "code_patch": 1828.9393690177571,
+          "scientific_symbolic": 1227.3180872905732,
+          "evidence_crosscheck": 2823.7137976795734
+        },
+        "router_tier_allocation": {
+          "easy": {
+            "tier1_fast": 0.8868333333333334,
+            "tier2_verified": 0.11266666666666666,
+            "tier3_hetero_debate": 0.0005
+          },
+          "medium": {
+            "tier1_fast": 0.471,
+            "tier2_verified": 0.1875,
+            "tier3_hetero_debate": 0.3415
+          },
+          "hard": {
+            "tier1_fast": 0.0,
+            "tier2_verified": 0.291,
+            "tier3_hetero_debate": 0.709
+          }
+        },
+        "tier3_shortcircuit_rate": 0.4765302886140184
+      },
+      "is_pareto_2d": true,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    },
+    {
+      "config_id": "S5_Router_Strict",
+      "label": "ParetoRouter-Strict",
+      "topology_family": "S5_ParetoAdaptiveRouter",
+      "accuracy": 0.9585000000000001,
+      "mean_tokens": 3309.780681836884,
+      "p50_latency_ms": 1671.1247363370499,
+      "p95_latency_ms": 3592.9217761393147,
+      "accuracy_std": 0.014505504199314088,
+      "easy_accuracy": 0.9863333333333333,
+      "medium_accuracy": 0.9605,
+      "hard_accuracy": 0.9286666666666666,
+      "metadata": {
+        "mean_llm_calls": 1.8260555555555555,
+        "mean_verifier_calls": 0.22777777777777777,
+        "mean_repair_calls": 0.09372222222222222,
+        "mean_dag_depth": 1.3794444444444445,
+        "tokens_by_difficulty": {
+          "easy": 1239.9634922776015,
+          "medium": 3049.4008283826242,
+          "hard": 5639.977724850426
+        },
+        "accuracy_by_domain": {
+          "code_patch": 0.9635,
+          "scientific_symbolic": 0.9438333333333333,
+          "evidence_crosscheck": 0.9681666666666666
+        },
+        "tokens_by_domain": {
+          "code_patch": 2950.2656573661197,
+          "scientific_symbolic": 2495.7264037467794,
+          "evidence_crosscheck": 4483.349984397754
+        },
+        "router_tier_allocation": {
+          "easy": {
+            "tier1_fast": 0.5913333333333334,
+            "tier2_verified": 0.4076666666666667,
+            "tier3_hetero_debate": 0.001
+          },
+          "medium": {
+            "tier1_fast": 0.24133333333333334,
+            "tier2_verified": 0.41983333333333334,
+            "tier3_hetero_debate": 0.3388333333333333
+          },
+          "hard": {
+            "tier1_fast": 0.0,
+            "tier2_verified": 0.0,
+            "tier3_hetero_debate": 1.0
+          }
+        },
+        "tier3_shortcircuit_rate": 0.5090185346436124
+      },
+      "is_pareto_2d": true,
+      "is_static_pareto_2d": false,
+      "pareto_rank_3d": 1,
+      "is_pareto_3d": true
+    }
+  ]
+}

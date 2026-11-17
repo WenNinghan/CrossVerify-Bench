@@ -1,0 +1,29 @@
+config_id,label,topology_family,accuracy,accuracy_std,easy_accuracy,medium_accuracy,hard_accuracy,code_patch_acc,scientific_symbolic_acc,evidence_crosscheck_acc,mean_tokens,p50_latency_ms,p95_latency_ms,mean_llm_calls,is_pareto_2d,pareto_rank_3d
+S1_Fast,SinglePass (Fast-8B),S1_SinglePass,0.558,0.03607,0.885,0.54233,0.24667,0.572,0.54083,0.56117,418.84,234.79,335.55,1.0,True,1
+S1_Mid,SinglePass (Mid-32B),S1_SinglePass,0.71206,0.02837,0.9355,0.73583,0.46483,0.72833,0.7095,0.69833,748.81,511.6,754.79,1.0,True,1
+S1_Frontier,SinglePass (Frontier-70B),S1_SinglePass,0.797,0.0276,0.95783,0.825,0.60817,0.81367,0.79867,0.77867,1678.53,1017.39,1574.09,1.0,False,1
+S1_Reasoning,SinglePass (Reasoning-Pro),S1_SinglePass,0.85772,0.02785,0.97733,0.8795,0.71633,0.86617,0.874,0.833,3300.01,2140.68,3406.44,1.0,False,2
+S2_SC3_Fast,SC@3 (Fast-8B),S2_SelfConsistency,0.699,0.02927,0.98283,0.74967,0.3645,0.71183,0.68983,0.69533,1255.5,300.65,393.85,3.0,False,1
+S2_SC5_Fast,SC@5 (Fast-8B),S2_SelfConsistency,0.71017,0.02729,0.99717,0.81917,0.31417,0.7225,0.69817,0.70983,2092.99,325.76,417.14,5.0,False,1
+S2_SC7_Fast,SC@7 (Fast-8B),S2_SelfConsistency,0.73217,0.02657,0.99967,0.87417,0.32267,0.73833,0.72067,0.7375,2931.62,342.99,430.36,7.0,False,1
+S2_SC9_Fast,SC@9 (Fast-8B),S2_SelfConsistency,0.74072,0.02132,0.99967,0.91167,0.31083,0.755,0.72867,0.7385,3768.59,357.6,446.07,9.0,False,1
+S2_SC3_Mid,SC@3 (Mid-32B),S2_SelfConsistency,0.85433,0.0194,0.99567,0.911,0.65633,0.86617,0.85317,0.84367,2245.41,641.56,866.03,3.0,False,1
+S2_SC5_Mid,SC@5 (Mid-32B),S2_SelfConsistency,0.8945,0.02355,0.9995,0.96767,0.71633,0.89317,0.90217,0.88817,3743.73,694.34,913.03,5.0,False,1
+S2_SC7_Mid,SC@7 (Mid-32B),S2_SelfConsistency,0.91561,0.01916,0.99967,0.9875,0.75967,0.9235,0.91517,0.90817,5239.81,728.56,945.9,7.0,False,1
+S2_SC5_Frontier,SC@5 (Frontier-70B),S2_SelfConsistency,0.96294,0.01288,1.0,0.992,0.89683,0.96633,0.9655,0.957,8395.27,1391.21,1882.62,5.0,False,1
+S3_GV1_Frontier_WeakVer,GenVerify@1 (Frontier + WeakVer),S3_GenVerifyLoop,0.74844,0.02763,0.86283,0.78567,0.59683,0.766,0.74983,0.7295,2942.75,1565.39,2936.84,2.342,False,3
+S3_GV3_Frontier_WeakVer_Homog,GenVerify@3-Homog (Frontier + WeakVer),S3_GenVerifyLoop,0.69744,0.03306,0.791,0.7145,0.58683,0.71067,0.6935,0.68817,5565.87,3150.82,5232.5,5.082,False,4
+S3_GV1_Fast_MidVer,GenVerify@1 (Fast + MidVer),S3_GenVerifyLoop,0.62467,0.0316,0.902,0.6455,0.3265,0.642,0.6125,0.6195,1529.13,802.87,1155.66,2.349,False,2
+S3_GV2_Mid_MidVer,GenVerify@2 (Mid + MidVer),S3_GenVerifyLoop,0.79983,0.03517,0.9655,0.82867,0.60533,0.80017,0.795,0.80433,2249.02,1085.8,2646.6,2.629,False,2
+S3_GV1_Mid_CalibVer,GenVerify@1 (Mid + CalibVer),S3_GenVerifyLoop,0.81161,0.03003,0.97467,0.84683,0.61333,0.819,0.81133,0.8045,2447.1,1424.49,2141.94,2.259,False,2
+S3_GV2_Mid_CalibVer,GenVerify@2 (Mid + CalibVer),S3_GenVerifyLoop,0.85606,0.02456,0.98133,0.89617,0.69067,0.86217,0.85833,0.84767,2910.71,1422.53,3327.89,2.607,False,2
+S3_GV2_Frontier_CalibVer,GenVerify@2 (Frontier + CalibVer),S3_GenVerifyLoop,0.91172,0.01987,0.99083,0.939,0.80533,0.91383,0.916,0.90533,3899.19,1939.12,4565.93,2.437,False,3
+S3_GV1_Frontier_ToolVer,GenVerify@1 (Frontier + ToolVer),S3_GenVerifyLoop,0.9165,0.01997,0.99167,0.948,0.80983,0.92133,0.9185,0.90967,3483.75,1895.94,3247.79,2.209,False,2
+S3_GV3_Frontier_ToolVer,GenVerify@3 (Frontier + ToolVer),S3_GenVerifyLoop,0.96633,0.01251,0.9965,0.9845,0.918,0.96883,0.96717,0.963,4016.0,1893.87,5160.04,2.552,True,1
+S4_Debate_Homog_Mid,DebateDAG (Homog 2xMid),S4_AdversarialDebateDAG,0.8375,0.02579,0.97733,0.8805,0.65467,0.843,0.83983,0.82967,3917.93,1515.56,1918.82,5.0,False,2
+S4_Debate_Hetero_MidFrontier,DebateDAG (Hetero Mid+Frontier),S4_AdversarialDebateDAG,0.92061,0.01869,0.99317,0.95417,0.8145,0.9285,0.923,0.91033,6524.51,2663.6,3503.45,5.0,False,2
+S4_Debate_Hetero_ToolJudge,DebateDAG (Frontier+Reasoning + ToolJudge),S4_AdversarialDebateDAG,0.97506,0.01132,0.99867,0.99,0.9365,0.97783,0.97783,0.9695,8875.38,3699.39,5068.59,5.0,True,1
+S5_Router_Lite,ParetoRouter-Lite,S5_ParetoAdaptiveRouter,0.84883,0.02628,0.96967,0.86767,0.70917,0.828,0.82733,0.89117,1139.03,445.12,1855.37,1.473,True,1
+S5_Router_Eco,ParetoRouter-Eco,S5_ParetoAdaptiveRouter,0.91344,0.02116,0.98383,0.93083,0.82567,0.92483,0.89033,0.92517,1666.43,704.72,2404.63,1.795,True,1
+S5_Router_Balanced,ParetoRouter-Balanced,S5_ParetoAdaptiveRouter,0.92389,0.01848,0.98133,0.931,0.85933,0.931,0.89167,0.949,1959.99,757.93,2311.51,1.772,True,1
+S5_Router_Strict,ParetoRouter-Strict,S5_ParetoAdaptiveRouter,0.9585,0.01451,0.98633,0.9605,0.92867,0.9635,0.94383,0.96817,3309.78,1671.12,3592.92,1.826,True,1
