@@ -53,13 +53,13 @@ with net accuracy gain:
 \Delta p_1 = p_1 - p_0 = (1 - p_0)(1 - \beta) q_{I\to C} - p_0 \alpha q_{C\to I}
 ```
 
-Verification strictly improves generator accuracy ($`\Delta p_1 > 0`$) **if and only if**:
+Verification strictly improves generator accuracy ($`\Delta p_1 \gt 0`$) **if and only if**:
 
 ```math
 \frac{\alpha}{1 - \beta} < \frac{1 - p_0}{p_0} \cdot \frac{q_{I\to C}}{q_{C\to I}}
 ```
 
-> **Systems Implication:** As base generator accuracy $`p_0 \to 1`$, the odds factor $`\frac{1 - p_0}{p_0}`$ vanishes as $`O(1 - p_0)`$. Consequently, **the stronger the base generator, the stricter the upper bound on verifier false-rejection rate $`\alpha`$**. Attaching an uncalibrated critic ($`\alpha > \alpha^*(\beta)`$) pushes the system into the **Verification Harm Phase** ($`\Delta p_1 < 0`$).
+> **Systems Implication:** As base generator accuracy $`p_0 \to 1`$, the odds factor $`\frac{1 - p_0}{p_0}`$ vanishes as $`O(1 - p_0)`$. Consequently, **the stronger the base generator, the stricter the upper bound on verifier false-rejection rate $`\alpha`$**. Attaching an uncalibrated critic ($`\alpha \gt \alpha^*(\beta)`$) pushes the system into the **Verification Harm Phase** ($`\Delta p_1 \lt 0`$).
 
 ### Theorem 2 (Multi-Round Closed-Form Trajectories & Early-Exit Absorption)
 
@@ -99,7 +99,7 @@ p_\infty^{\text{early}} = \frac{(1 - \alpha)\big(p_0 \beta + (1 - \beta) q_{I\to
 | :--- | :---: | :--- | :--- | :--- |
 | **`code_patch`** | 60 | Clamped modular counting, gap-bridged interval coalescing, hop-constrained weighted DAG DP | Isolated AST compilation + multi-case boundary/adversarial unit assertions | Python `ast.parse`, signature arity, forbidden-import filter, public non-negativity/degenerate smoke check |
 | **`scientific_symbolic`** | 60 | Bulk/surface reaction kinetics SI exponents `[L,M,T,mol]`, $`2\times 2`$ ODE Jacobian phase portraits, Schnakenberg Turing dispersion $`M(k)`$ | Exact dimensional vector match & `numpy.linalg.eigvals` spectral tolerance (`1e-3`) | JSON schema validation, molar conservation ($`M=0, T=-1`$), algebraic sign consistency ($`\det J`$, $`\max\operatorname{Re}\lambda`$) |
-| **`evidence_crosscheck`** | 60 | Multi-source telemetry/ledger reconciliation under CRC integrity, authority tiers, MW-to-kW normalization & coupled DAG/mutex scheduling | Exact reconciled metric, invalidated-source set, and canonical lexicographic schedule | Permutation completeness, public precedence chain ($`W_0 < W_2 < W_4`$), and slot-mutex separation checks |
+| **`evidence_crosscheck`** | 60 | Multi-source telemetry/ledger reconciliation under CRC integrity, authority tiers, MW-to-kW normalization & coupled DAG/mutex scheduling | Exact reconciled metric, invalidated-source set, and canonical lexicographic schedule | Permutation completeness, public precedence chain ($`W_0 \lt W_2 \lt W_4`$), and slot-mutex separation checks |
 
 **Strict Zero-Oracle Guarantee:** Every task carries subtle semantic distractors (e.g., nested-interval `max` omission, $`k`$ vs. $`k^2`$ diffusion operator typo, stale or unnormalized MW/kW table selection) that **pass `runtime_microcheck` (`True`) while failing `evaluate` (`False`)**, ensuring runtime micro-checks act as genuine non-cheating pre-filters rather than ground-truth oracles. Similarly, `extract_prompt_features(prompt)` computes structural complexity solely from raw prompt text (`Easy: 0.207`, `Medium: 0.451`, `Hard: 0.716`), never reading `task.difficulty`.
 
@@ -158,7 +158,7 @@ p_\infty^{\text{early}} = \frac{(1 - \alpha)\big(p_0 \beta + (1 - \beta) q_{I\to
 
 The theoretical and empirical findings of `CrossVerify-Bench` translate directly into four production scheduling rules for multi-agent workbenches such as **`OmniHarness`**:
 
-1. **Enforce the Markov Precision Gate ($`\alpha < \alpha^*`$) Before Spawning Critics:**
+1. **Enforce the Markov Precision Gate ($`\alpha \lt \alpha^*`$) Before Spawning Critics:**
    Never attach a lightweight or uncalibrated LLM critic to a stronger generator. When $`p_0 \ge 0.80`$, require either a cross-family frontier verifier ($`\alpha \le 0.05`$) or deterministic runtime tool grounding; otherwise bypass LLM verification to prevent negative Markov drift.
 2. **Pre-Filter with Zero-Token Deterministic Micro-Checks Before LLM Verification:**
    Run AST compilation, schema validation, dimensional conservation, or public constraint checks *before* invoking an LLM verifier. When a runtime check fails, route `stderr` diagnostics directly to conditional repair—saving `~1,300` verifier tokens per syntax/invariant error and slashing effective Type-II false acceptance $`\beta_{\text{eff}}`$ by `>65%`.
