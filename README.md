@@ -10,20 +10,20 @@
 > 1. **When does adding a Verifier Agent genuinely improve accuracy versus actively corrupting a strong generator?**
 > 2. **How should an orchestrator route tasks across single-pass models, iterative verifiers, and multi-agent debate DAGs to achieve Pareto-optimal `(Accuracy ↑, Token Cost ↓, P95 Latency ↓)`?**
 
-`CrossVerify-Bench` provides both an **exact analytical Markov-chain theory** of iterative `Generator -> Verifier -> Conditional Repair` pipelines and a **180-task deterministic multi-domain benchmark** evaluating **28 multi-agent configurations** across 5 orchestration families ($S_1$–$S_5$).
+`CrossVerify-Bench` provides both an **exact analytical Markov-chain theory** of iterative `Generator -> Verifier -> Conditional Repair` pipelines and a **180-task deterministic multi-domain benchmark** evaluating **28 multi-agent configurations** across 5 orchestration families ($`S_1`$–$`S_5`$).
 
 ---
 
 ## Executive Summary of Key Findings
 
 1. **The Verification Harm Theorem (Why Weak Verifiers Degrade Strong Generators):**
-   Pairing `Frontier-70B` (`79.70%` single-pass accuracy @ `1,679` tokens) with an uncalibrated `WeakVerifier` ($\alpha = 0.31$ false rejection, $\beta = 0.45$ false acceptance) **reduces accuracy by `-4.86 pp` at $T=1$ (`74.84%` @ `2,943` tokens)** and **`-9.96 pp` at $T=3$ homogeneous rounds (`69.74%` @ `5,566` tokens — `3.32x` token cost for strictly worse output)**.
+   Pairing `Frontier-70B` (`79.70%` single-pass accuracy @ `1,679` tokens) with an uncalibrated `WeakVerifier` ($`\alpha = 0.31`$ false rejection, $`\beta = 0.45`$ false acceptance) **reduces accuracy by `-4.86 pp` at $`T=1`$ (`74.84%` @ `2,943` tokens)** and **`-9.96 pp` at $`T=3`$ homogeneous rounds (`69.74%` @ `5,566` tokens — `3.32x` token cost for strictly worse output)**.
 2. **Exact Closed-Form Markov Alignment (`< 0.5%` Discrepancy):**
    Across both 60,000-trial synthetic rollouts and 100-seed 180-task benchmark evaluations, empirical `GenVerify@T` accuracies match our closed-form Markov equations with **maximum error `0.177%` (Monte Carlo) and `0.424%` (180-task benchmark)**.
 3. **Correlated Error Ceiling of Self-Consistency (`SC@K`):**
    Scaling `Fast-8B` from `SinglePass` to `SC@9` multiplies token cost **`9.0x`** (`419 -> 3,769` tokens) while Hard-stratum accuracy saturates at **`31.1%`** due to systematic distractor concentration.
 4. **Pareto Dominance of Zero-Oracle Adaptive Routing (`52%–70%` Token Reduction):**
-   Our `ParetoAdaptiveRouter` ($S_5$)—combining zero-token prompt structural signals, deterministic AST/dimensional/constraint runtime micro-checks, and a heterogeneous **Smart Disagreement Gate**—expands **2D Cost–Accuracy Hypervolume by `+7.11%`** (`0.7598 -> 0.8139`) and **3D `(Accuracy, Cost, P95 Latency)` Hypervolume by `+7.22%`** (`0.6714 -> 0.7198`):
+   Our `ParetoAdaptiveRouter` ($`S_5`$)—combining zero-token prompt structural signals, deterministic AST/dimensional/constraint runtime micro-checks, and a heterogeneous **Smart Disagreement Gate**—expands **2D Cost–Accuracy Hypervolume by `+7.11%`** (`0.7598 -> 0.8139`) and **3D `(Accuracy, Cost, P95 Latency)` Hypervolume by `+7.22%`** (`0.6714 -> 0.7198`):
    - **`ParetoRouter-Eco` (Knee Point):** Reaches **`91.34%` accuracy @ `1,666` tokens**, saving **`52.2%` tokens** and **`26.0%` P95 latency** vs. `GenVerify@1 (Frontier + ToolVer)` (`91.65%` @ `3,484` tokens), and **`68.2%` tokens** vs. `SC@7 (Mid-32B)` (`91.56%` @ `5,240` tokens).
    - **`ParetoRouter-Balanced`:** Reaches **`92.39%` accuracy @ `1,960` tokens**, saving **`70.0%` tokens** vs. `DebateDAG (Hetero Mid+Frontier)` (`92.06%` @ `6,525` tokens) and **`51.2%` tokens / `55.2%` P95 latency** vs. `GenVerify@3 (Frontier + ToolVer)`.
    - **`ParetoRouter-Strict`:** Reaches **`95.85%` accuracy @ `3,310` tokens**, saving **`60.6%` tokens** vs. `SC@5 (Frontier-70B)` (`96.29%` @ `8,395` tokens).
@@ -34,44 +34,58 @@
 
 ## 1. Analytical Theory: Markov Cross-Verification Dynamics
 
-We model iterative `Generator -> Verifier -> Conditional Repair` pipelines (`crossverify/markov_theory.py`) over latent correctness state $X_t \in \{C\text{ (Correct)}, I\text{ (Incorrect)}\}$ with initial generator accuracy $p_0 = \mathbb{P}(X_0 = C)$:
+We model iterative `Generator -> Verifier -> Conditional Repair` pipelines (`crossverify/markov_theory.py`) over latent correctness state $`X_t \in \{C\text{ (Correct)}, I\text{ (Incorrect)}\}`$ with initial generator accuracy $`p_0 = \mathbb{P}(X_0 = C)`$:
 
-- **Verifier Error Profile:** Type-I false rejection $\alpha = \mathbb{P}(\text{reject} \mid C)$ and Type-II false acceptance $\beta = \mathbb{P}(\text{accept} \mid I)$.
-- **Conditional Repair Transitions:** True-defect recovery probability $q_{I\to C} = \mathbb{P}(X_t = C \mid X_{t-1} = I, \text{rejected})$ and spurious-critique corruption probability $q_{C\to I} = \mathbb{P}(X_t = I \mid X_{t-1} = C, \text{rejected})$.
+- **Verifier Error Profile:** Type-I false rejection $`\alpha = \mathbb{P}(\text{reject} \mid C)`$ and Type-II false acceptance $`\beta = \mathbb{P}(\text{accept} \mid I)`$.
+- **Conditional Repair Transitions:** True-defect recovery probability $`q_{I\to C} = \mathbb{P}(X_t = C \mid X_{t-1} = I, \text{rejected})`$ and spurious-critique corruption probability $`q_{C\to I} = \mathbb{P}(X_t = I \mid X_{t-1} = C, \text{rejected})`$.
 
 ### Theorem 1 (Single-Step Net Gain & Critical Verification Harm Boundary)
 
-After one round of verification and conditional repair ($T = 1$), both early-stopping and homogeneous pipelines yield exact accuracy:
+After one round of verification and conditional repair ($`T = 1`$), both early-stopping and homogeneous pipelines yield exact accuracy:
 
-$$p_1 = p_0(1 - \alpha q_{C\to I}) + (1 - p_0)(1 - \beta) q_{I\to C}$$
+```math
+p_1 = p_0(1 - \alpha q_{C\to I}) + (1 - p_0)(1 - \beta) q_{I\to C}
+```
 
 with net accuracy gain:
 
-$$\Delta p_1 = p_1 - p_0 = (1 - p_0)(1 - \beta) q_{I\to C} - p_0 \alpha q_{C\to I}$$
+```math
+\Delta p_1 = p_1 - p_0 = (1 - p_0)(1 - \beta) q_{I\to C} - p_0 \alpha q_{C\to I}
+```
 
-Verification strictly improves generator accuracy ($\Delta p_1 > 0$) **if and only if**:
+Verification strictly improves generator accuracy ($`\Delta p_1 > 0`$) **if and only if**:
 
-$$\frac{\alpha}{1 - \beta} < \frac{1 - p_0}{p_0} \cdot \frac{q_{I\to C}}{q_{C\to I}}$$
+```math
+\frac{\alpha}{1 - \beta} < \frac{1 - p_0}{p_0} \cdot \frac{q_{I\to C}}{q_{C\to I}}
+```
 
-> **Systems Implication:** As base generator accuracy $p_0 \to 1$, the odds factor $\frac{1 - p_0}{p_0}$ vanishes as $O(1 - p_0)$. Consequently, **the stronger the base generator, the stricter the upper bound on verifier false-rejection rate $\alpha$**. Attaching an uncalibrated critic ($\alpha > \alpha^*(\beta)$) pushes the system into the **Verification Harm Phase** ($\Delta p_1 < 0$).
+> **Systems Implication:** As base generator accuracy $`p_0 \to 1`$, the odds factor $`\frac{1 - p_0}{p_0}`$ vanishes as $`O(1 - p_0)`$. Consequently, **the stronger the base generator, the stricter the upper bound on verifier false-rejection rate $`\alpha`$**. Attaching an uncalibrated critic ($`\alpha > \alpha^*(\beta)`$) pushes the system into the **Verification Harm Phase** ($`\Delta p_1 < 0`$).
 
 ### Theorem 2 (Multi-Round Closed-Form Trajectories & Early-Exit Absorption)
 
-1. **Homogeneous Re-Verification Chain (`early_stop=False`):** With effective per-round corruption $u = \alpha q_{C\to I}$ and recovery $v = (1 - \beta) q_{I\to C}$, the $T$-step accuracy and stationary fixed point $p^*$ are:
+1. **Homogeneous Re-Verification Chain (`early_stop=False`):** With effective per-round corruption $`u = \alpha q_{C\to I}`$ and recovery $`v = (1 - \beta) q_{I\to C}`$, the $`T`$-step accuracy and stationary fixed point $`p^*`$ are:
 
-$$p_T = p^* + (p_0 - p^*)(1 - u - v)^T, \qquad p^* = \frac{(1 - \beta) q_{I\to C}}{(1 - \beta) q_{I\to C} + \alpha q_{C\to I}}$$
+```math
+p_T = p^* + (p_0 - p^*)(1 - u - v)^T, \qquad p^* = \frac{(1 - \beta) q_{I\to C}}{(1 - \beta) q_{I\to C} + \alpha q_{C\to I}}
+```
 
-2. **Early-Stopping Conditional Repair (`early_stop=True`):** Halting immediately upon verifier acceptance induces an absorbing Markov chain with transient $2\times 2$ open-candidate operator:
+2. **Early-Stopping Conditional Repair (`early_stop=True`):** Halting immediately upon verifier acceptance induces an absorbing Markov chain with transient $`2\times 2`$ open-candidate operator:
 
-$$Q = \begin{pmatrix} \alpha(1 - q_{C\to I}) & (1 - \beta) q_{I\to C} \\ \alpha q_{C\to I} & (1 - \beta)(1 - q_{I\to C}) \end{pmatrix}, \qquad \mathbf{s}_t = Q^t \begin{pmatrix} p_0 \\ 1 - p_0 \end{pmatrix}$$
+```math
+Q = \begin{pmatrix} \alpha(1 - q_{C\to I}) & (1 - \beta) q_{I\to C} \\ \alpha q_{C\to I} & (1 - \beta)(1 - q_{I\to C}) \end{pmatrix}, \qquad \mathbf{s}_t = Q^t \begin{pmatrix} p_0 \\ 1 - p_0 \end{pmatrix}
+```
 
-yielding exact $T$-step accuracy and expected token expenditure:
+yielding exact $`T`$-step accuracy and expected token expenditure:
 
-$$p_T^{\text{early}} = (1 - \alpha)\sum_{t=0}^{T-1} [\mathbf{s}_t]_C + [\mathbf{s}_T]_C, \qquad \mathbb{E}[\text{Cost}_T^{\text{early}}] = c_{\text{gen}} + c_{\text{ver}} \sum_{t=0}^{T-1} \mathbf{1}^\top \mathbf{s}_t + c_{\text{rep}} \sum_{t=1}^{T} \mathbf{1}^\top \mathbf{s}_t$$
+```math
+p_T^{\text{early}} = (1 - \alpha)\sum_{t=0}^{T-1} [\mathbf{s}_t]_C + [\mathbf{s}_T]_C, \qquad \mathbb{E}[\text{Cost}_T^{\text{early}}] = c_{\text{gen}} + c_{\text{ver}} \sum_{t=0}^{T-1} \mathbf{1}^\top \mathbf{s}_t + c_{\text{rep}} \sum_{t=1}^{T} \mathbf{1}^\top \mathbf{s}_t
+```
 
 with exact asymptotic absorption accuracy:
 
-$$p_\infty^{\text{early}} = \frac{(1 - \alpha)\big(p_0 \beta + (1 - \beta) q_{I\to C}\big)}{(1 - \alpha)\big(\beta + (1 - \beta) q_{I\to C}\big) + \alpha \beta q_{C\to I}}$$
+```math
+p_\infty^{\text{early}} = \frac{(1 - \alpha)\big(p_0 \beta + (1 - \beta) q_{I\to C}\big)}{(1 - \alpha)\big(\beta + (1 - \beta) q_{I\to C}\big) + \alpha \beta q_{C\to I}}
+```
 
 ![Verifier Phase Diagram and Markov Trajectories](assets/verifier_phase_diagram.png)
 
@@ -84,24 +98,24 @@ $$p_\infty^{\text{early}} = \frac{(1 - \alpha)\big(p_0 \beta + (1 - \beta) q_{I\
 | Domain | Tasks | Problem Structure | Oracle Evaluator (`evaluate`) | Zero-Oracle Runtime Tool (`runtime_microcheck`) |
 | :--- | :---: | :--- | :--- | :--- |
 | **`code_patch`** | 60 | Clamped modular counting, gap-bridged interval coalescing, hop-constrained weighted DAG DP | Isolated AST compilation + multi-case boundary/adversarial unit assertions | Python `ast.parse`, signature arity, forbidden-import filter, public non-negativity/degenerate smoke check |
-| **`scientific_symbolic`** | 60 | Bulk/surface reaction kinetics SI exponents `[L,M,T,mol]`, $2\times 2$ ODE Jacobian phase portraits, Schnakenberg Turing dispersion $M(k)$ | Exact dimensional vector match & `numpy.linalg.eigvals` spectral tolerance (`1e-3`) | JSON schema validation, molar conservation ($M=0, T=-1$), algebraic sign consistency ($\det J$, $\max\operatorname{Re}\lambda$) |
-| **`evidence_crosscheck`** | 60 | Multi-source telemetry/ledger reconciliation under CRC integrity, authority tiers, MW-to-kW normalization & coupled DAG/mutex scheduling | Exact reconciled metric, invalidated-source set, and canonical lexicographic schedule | Permutation completeness, public precedence chain ($W_0 < W_2 < W_4$), and slot-mutex separation checks |
+| **`scientific_symbolic`** | 60 | Bulk/surface reaction kinetics SI exponents `[L,M,T,mol]`, $`2\times 2`$ ODE Jacobian phase portraits, Schnakenberg Turing dispersion $`M(k)`$ | Exact dimensional vector match & `numpy.linalg.eigvals` spectral tolerance (`1e-3`) | JSON schema validation, molar conservation ($`M=0, T=-1`$), algebraic sign consistency ($`\det J`$, $`\max\operatorname{Re}\lambda`$) |
+| **`evidence_crosscheck`** | 60 | Multi-source telemetry/ledger reconciliation under CRC integrity, authority tiers, MW-to-kW normalization & coupled DAG/mutex scheduling | Exact reconciled metric, invalidated-source set, and canonical lexicographic schedule | Permutation completeness, public precedence chain ($`W_0 < W_2 < W_4`$), and slot-mutex separation checks |
 
-**Strict Zero-Oracle Guarantee:** Every task carries subtle semantic distractors (e.g., nested-interval `max` omission, $k$ vs. $k^2$ diffusion operator typo, stale or unnormalized MW/kW table selection) that **pass `runtime_microcheck` (`True`) while failing `evaluate` (`False`)**, ensuring runtime micro-checks act as genuine non-cheating pre-filters rather than ground-truth oracles. Similarly, `extract_prompt_features(prompt)` computes structural complexity solely from raw prompt text (`Easy: 0.207`, `Medium: 0.451`, `Hard: 0.716`), never reading `task.difficulty`.
+**Strict Zero-Oracle Guarantee:** Every task carries subtle semantic distractors (e.g., nested-interval `max` omission, $`k`$ vs. $`k^2`$ diffusion operator typo, stale or unnormalized MW/kW table selection) that **pass `runtime_microcheck` (`True`) while failing `evaluate` (`False`)**, ensuring runtime micro-checks act as genuine non-cheating pre-filters rather than ground-truth oracles. Similarly, `extract_prompt_features(prompt)` computes structural complexity solely from raw prompt text (`Easy: 0.207`, `Medium: 0.451`, `Hard: 0.716`), never reading `task.difficulty`.
 
 ![Difficulty and Domain Stratified Breakdown](assets/difficulty_stratified_breakdown.png)
 
 ---
 
-## 3. Orchestration Topologies ($S_1$–$S_5$) & Empirical Benchmark (28 Configs)
+## 3. Orchestration Topologies ($`S_1`$–$`S_5`$) & Empirical Benchmark (28 Configs)
 
 `crossverify/topologies.py` implements five executable multi-agent topology families (compatible with both calibrated benchmark replay via `CalibratedReplayBackend` and live OpenAI/vLLM endpoints via `LiveOpenAIBackend`):
 
-- **$S_1$ (`SinglePass`):** Direct single-model generation (`Fast-8B`, `Mid-32B`, `Frontier-70B`, `Reasoning-Pro`).
-- **$S_2$ (`SelfConsistencyVote`, `SC@K`):** Parallel $K \in \{3, 5, 7, 9\}$ sampling with canonicalized confidence-weighted consensus.
-- **$S_3$ (`GeneratorVerifierLoop`, `GenVerify@T`):** Iterative critique and conditional repair across `Weak`, `Mid`, `Calibrated Cross-Model`, and `Tool-Augmented` verifiers.
-- **$S_4$ (`AdversarialDebateDAG`):** Explicit `networkx.DiGraph` 3-layer execution graph (`2 Proposers -> 2 Discrepancy Cross-Examiners -> Judge Synthesis`) with critical-path latency tracking.
-- **$S_5$ (`ParetoAdaptiveRouter`):** Three-tier policy routing low-complexity prompts through `Fast-8B + 0-tok MicroCheck` (Tier 1), moderate/escalated tasks through `Mid/Frontier + Pre-Filtered Tool Repair` (Tier 2), and complex tasks through `Heterogeneous Dual-Proposers` with a **Smart Disagreement Gate** that short-circuits debate chatter (`47.7%` of Tier-3 arrivals) whenever independent heterogeneous proposals canonically agree and pass `runtime_microcheck` (Tier 3).
+- **$`S_1`$ (`SinglePass`):** Direct single-model generation (`Fast-8B`, `Mid-32B`, `Frontier-70B`, `Reasoning-Pro`).
+- **$`S_2`$ (`SelfConsistencyVote`, `SC@K`):** Parallel $`K \in \{3, 5, 7, 9\}`$ sampling with canonicalized confidence-weighted consensus.
+- **$`S_3`$ (`GeneratorVerifierLoop`, `GenVerify@T`):** Iterative critique and conditional repair across `Weak`, `Mid`, `Calibrated Cross-Model`, and `Tool-Augmented` verifiers.
+- **$`S_4`$ (`AdversarialDebateDAG`):** Explicit `networkx.DiGraph` 3-layer execution graph (`2 Proposers -> 2 Discrepancy Cross-Examiners -> Judge Synthesis`) with critical-path latency tracking.
+- **$`S_5`$ (`ParetoAdaptiveRouter`):** Three-tier policy routing low-complexity prompts through `Fast-8B + 0-tok MicroCheck` (Tier 1), moderate/escalated tasks through `Mid/Frontier + Pre-Filtered Tool Repair` (Tier 2), and complex tasks through `Heterogeneous Dual-Proposers` with a **Smart Disagreement Gate** that short-circuits debate chatter (`47.7%` of Tier-3 arrivals) whenever independent heterogeneous proposals canonically agree and pass `runtime_microcheck` (Tier 3).
 
 ![Router Tier Allocation and Latency Trade-Off](assets/routing_allocation_and_latency.png)
 
@@ -144,12 +158,12 @@ $$p_\infty^{\text{early}} = \frac{(1 - \alpha)\big(p_0 \beta + (1 - \beta) q_{I\
 
 The theoretical and empirical findings of `CrossVerify-Bench` translate directly into four production scheduling rules for multi-agent workbenches such as **`OmniHarness`**:
 
-1. **Enforce the Markov Precision Gate ($\alpha < \alpha^*$) Before Spawning Critics:**
-   Never attach a lightweight or uncalibrated LLM critic to a stronger generator. When $p_0 \ge 0.80$, require either a cross-family frontier verifier ($\alpha \le 0.05$) or deterministic runtime tool grounding; otherwise bypass LLM verification to prevent negative Markov drift.
+1. **Enforce the Markov Precision Gate ($`\alpha < \alpha^*`$) Before Spawning Critics:**
+   Never attach a lightweight or uncalibrated LLM critic to a stronger generator. When $`p_0 \ge 0.80`$, require either a cross-family frontier verifier ($`\alpha \le 0.05`$) or deterministic runtime tool grounding; otherwise bypass LLM verification to prevent negative Markov drift.
 2. **Pre-Filter with Zero-Token Deterministic Micro-Checks Before LLM Verification:**
-   Run AST compilation, schema validation, dimensional conservation, or public constraint checks *before* invoking an LLM verifier. When a runtime check fails, route `stderr` diagnostics directly to conditional repair—saving `~1,300` verifier tokens per syntax/invariant error and slashing effective Type-II false acceptance $\beta_{\text{eff}}$ by `>65%`.
+   Run AST compilation, schema validation, dimensional conservation, or public constraint checks *before* invoking an LLM verifier. When a runtime check fails, route `stderr` diagnostics directly to conditional repair—saving `~1,300` verifier tokens per syntax/invariant error and slashing effective Type-II false acceptance $`\beta_{\text{eff}}`$ by `>65%`.
 3. **Replace Homogeneous `SC@K` on Hard Tasks with Heterogeneous Disagreement Gating:**
-   On high-complexity prompts ($s_{\text{struct}} \ge 0.58$), run two *architecturally distinct* proposers in parallel and short-circuit immediately if their canonicalized outputs agree and pass `runtime_microcheck` (`47.7%` short-circuit rate), invoking judge synthesis *only* upon genuine discrepancy.
+   On high-complexity prompts ($`s_{\text{struct}} \ge 0.58`$), run two *architecturally distinct* proposers in parallel and short-circuit immediately if their canonicalized outputs agree and pass `runtime_microcheck` (`47.7%` short-circuit rate), invoking judge synthesis *only* upon genuine discrepancy.
 4. **Select Operating Modes Along the Marginal Token Utility Curve:**
    - Tight Latency SLA (`P95 < 1.0s`): Parallel `SC@5 (Mid-32B)` (`89.5%` @ `913 ms` P95).
    - Balanced Cost–Accuracy Knee (`< 2.0k` tokens/task): `ParetoRouter-Eco` / `ParetoRouter-Balanced` (`91.3%–92.4%` @ `1,666–1,960` tokens).
