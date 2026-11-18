@@ -1,0 +1,24 @@
+{
+  "role": "review",
+  "batch": 6,
+  "model_requested": "gpt-6.2-sol",
+  "reasoning_effort": "medium",
+  "ids": [
+    "F06",
+    "F12",
+    "F18",
+    "F24"
+  ],
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "prompt_hash": "944323b92b715eb07c2c38410bea2303febcdb46396a0ba3e629065c19d7630c",
+  "collected_utc": "2026-11-18T17:06:00.174519+00:00",
+  "usage": {
+    "input_tokens": 15598,
+    "cached_input_tokens": 10368,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 975,
+    "reasoning_output_tokens": 759
+  },
+  "response": "{\n  \"F06\": {\"verdict\": \"ACCEPT\", \"reason\": \"Interval dynamic programming gives a minimum of 78, attained by one parenthesization.\"},\n  \"F12\": {\"verdict\": \"ACCEPT\", \"reason\": \"First hits at steps 3, 5, and 7 contribute 2/27, 6/81, and 46/729, which sum to 154/729.\"},\n  \"F18\": {\"verdict\": \"ACCEPT\", \"reason\": \"Candidate 3 is eliminated first, then 4 loses the five-vote tie to 1, and 2 defeats 1 by 9 votes to 5.\"},\n  \"F24\": {\"verdict\": \"ACCEPT\", \"reason\": \"The only assignments attaining 36 are [1, 5, 2, 3, 4] and [4, 5, 1, 3, 2], and the first is lexicographically smaller.\"}\n}",
+  "tool_events": 0
+}

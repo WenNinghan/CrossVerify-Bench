@@ -1,16 +1,16 @@
 config_id,label,family,accuracy_pct,easy_pct,medium_pct,hard_pct,mean_tokens,p50_latency_ms,p95_latency_ms,pareto_2d,rank_3d
-S1_QwenFlash_NoThink,SinglePass: Qwen3.8-Flash (NoThink),S1_SinglePass,64.44,80.0,93.3,20.0,388.9,1799.4,6754.9,True,1
-S1_DeepSeekFlash_NoThink,SinglePass: DeepSeek-Flash (NoThink),S1_SinglePass,48.89,40.0,73.3,33.3,381.7,2574.4,6159.7,True,1
+S1_QwenFlash_NoThink,SinglePass: Qwen3.8-Flash (NoThink),S1_SinglePass,68.89,80.0,93.3,33.3,367.4,1799.4,6754.9,True,1
+S1_DeepSeekFlash_NoThink,SinglePass: DeepSeek-Flash (NoThink),S1_SinglePass,48.89,40.0,73.3,33.3,260.2,2574.4,4989.7,True,1
 S1_MiniMax_M31,SinglePass: MiniMax-M3.1-Flash,S1_SinglePass,80.0,66.7,100.0,73.3,723.3,9614.9,17716.1,True,1
-S1_GLM53_FlashX,SinglePass: GLM-5.3-FlashX,S1_SinglePass,97.78,93.3,100.0,100.0,2158.7,4667.4,24999.0,True,1
-S1_MiMo_V26,SinglePass: MiMo-V2.6-Flash,S1_SinglePass,93.33,86.7,100.0,93.3,1736.7,4120.0,17226.9,True,1
-S2_SC3_QwenFlash,SC@3: Qwen3.8-Flash (NoThink),S2_SelfConsistency,62.22,80.0,86.7,20.0,1165.2,2216.5,15578.8,False,2
-S2_SC5_DeepSeekFlash,SC@5: DeepSeek-Flash (NoThink),S2_SelfConsistency,57.78,46.7,93.3,33.3,1635.6,2941.6,6758.0,False,2
-S3_DeepSeek_WeakQwenCritic,GenVerify: DeepSeek-Flash + Weak Qwen Critic,S3_GenVerifyLoop,77.78,86.7,93.3,53.3,2270.4,11875.6,20784.4,False,3
-S3_MiniMax_WeakQwenCritic,GenVerify: MiniMax-M3.1 + Weak Qwen Critic [Harm],S3_GenVerifyLoop,77.78,53.3,100.0,80.0,3340.3,26830.7,50501.2,False,4
-S3_GLM53_WeakQwenCritic,GenVerify: GLM-5.3-FlashX + Weak Qwen Critic [Harm],S3_GenVerifyLoop,95.56,86.7,100.0,100.0,7163.1,23979.4,80265.4,False,3
-S3_DeepSeek_ToolGLMVer,GenVerify: DeepSeek-Flash + MicroCheck + GLM-5.3 Verifier,S3_GenVerifyLoop,93.33,93.3,100.0,86.7,2239.2,8541.1,20636.1,False,2
-S3_MiniMax_ToolGLMVer,GenVerify: MiniMax-M3.1 + MicroCheck + GLM-5.3 Verifier,S3_GenVerifyLoop,88.89,66.7,100.0,100.0,2669.2,16009.0,44519.0,False,3
-S4_HeteroDebate_3Family,DebateDAG: GLM-5.3 x MiMo-V2.6 -> MiniMax-M3 Judge,S4_AdversarialDebateDAG,95.56,86.7,100.0,100.0,5128.2,13400.4,41384.0,False,2
-S5_ParetoRouter_Eco,ParetoRouter-Eco (OmniHarness Fast+Mid+Gate),S5_ParetoAdaptiveRouter,95.56,93.3,100.0,93.3,1866.0,5374.8,25784.3,True,1
-S5_ParetoRouter_Strict,ParetoRouter-Strict (OmniHarness DualProbe+HeteroGate),S5_ParetoAdaptiveRouter,100.0,100.0,100.0,100.0,3049.7,5829.6,44624.0,True,1
+S1_GLM53_FlashX,SinglePass: GLM-5.3-FlashX,S1_SinglePass,97.78,93.3,100.0,100.0,2094.3,4667.4,24999.0,True,1
+S1_MiMo_V26,SinglePass: MiMo-V2.6-Flash,S1_SinglePass,93.33,86.7,100.0,93.3,1615.5,4120.0,17226.9,False,2
+S2_SC3_QwenFlash,SC@3: Qwen3.8-Flash (NoThink),S2_SelfConsistency,64.44,80.0,86.7,26.7,1184.9,2216.5,12960.9,False,2
+S2_SC5_DeepSeekFlash,SC@5: DeepSeek-Flash (NoThink),S2_SelfConsistency,55.56,46.7,93.3,26.7,1331.1,2941.6,7456.5,False,2
+S3_DeepSeek_WeakQwenCritic,GenVerify: DeepSeek-Flash + Weak Qwen Critic,S3_GenVerifyLoop,82.22,86.7,86.7,73.3,2053.0,13924.4,32122.1,False,4
+S3_MiniMax_WeakQwenCritic,GenVerify: MiniMax-M3.1 + Weak Qwen Critic [Harm],S3_GenVerifyLoop,75.56,46.7,100.0,80.0,3729.3,26207.5,60871.9,False,5
+S3_GLM53_WeakQwenCritic,GenVerify: GLM-5.3-FlashX + Weak Qwen Critic [Harm],S3_GenVerifyLoop,95.56,86.7,100.0,100.0,6769.2,31136.6,77618.9,False,3
+S3_DeepSeek_ToolGLMVer,GenVerify: DeepSeek-Flash + MicroCheck + GLM-5.3 Verifier,S3_GenVerifyLoop,93.33,93.3,100.0,86.7,1999.6,8571.9,20192.5,False,3
+S3_MiniMax_ToolGLMVer,GenVerify: MiniMax-M3.1 + MicroCheck + GLM-5.3 Verifier,S3_GenVerifyLoop,88.89,66.7,100.0,100.0,2669.2,16009.0,44519.0,False,4
+S4_HeteroDebate_3Family,DebateDAG: GLM-5.3 x MiMo-V2.6 -> MiniMax-M3 Judge,S4_AdversarialDebateDAG,95.56,86.7,100.0,100.0,4958.2,13400.4,41384.0,False,2
+S5_ParetoRouter_Eco,ParetoRouter-Eco (5-Fold CV Fast+Mid+Gate),S5_ParetoAdaptiveRouter,95.56,93.3,100.0,93.3,1559.7,5374.8,15492.3,True,1
+S5_ParetoRouter_Strict,ParetoRouter-Strict (5-Fold CV DualProbe+HeteroGate),S5_ParetoAdaptiveRouter,100.0,100.0,100.0,100.0,2446.0,5829.6,25184.8,True,1

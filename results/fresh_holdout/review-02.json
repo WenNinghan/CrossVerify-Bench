@@ -1,0 +1,24 @@
+{
+  "role": "review",
+  "batch": 2,
+  "model_requested": "gpt-6.2-sol",
+  "reasoning_effort": "medium",
+  "ids": [
+    "F02",
+    "F08",
+    "F14",
+    "F20"
+  ],
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "prompt_hash": "cff7632af0934e526a73b75487ea8516bd8afaebe6bda83a14173f789fe8b901",
+  "collected_utc": "2026-11-18T17:02:34.335795+00:00",
+  "usage": {
+    "input_tokens": 15779,
+    "cached_input_tokens": 10368,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 607,
+    "reasoning_output_tokens": 422
+  },
+  "response": "{\n  \"F02\": {\"verdict\":\"ACCEPT\",\"reason\":\"LFU eviction with least-recently-used tie-breaking yields 14 misses and leaves pages 2, 4, 6, and 7.\"},\n  \"F08\": {\"verdict\":\"ACCEPT\",\"reason\":\"Hospitals 1, 2, and 3 finish with residents 2, 4, and 3, respectively. Resident 1 is unmatched.\"},\n  \"F14\": {\"verdict\":\"ACCEPT\",\"reason\":\"The two maximum-probability paths differ only in their final state. Ending in 0 gives the lexicographically earlier path.\"},\n  \"F20\": {\"verdict\":\"ACCEPT\",\"reason\":\"The first query has no eligible row. The remaining queries select rows 2, 5, 2, and 4 in order.\"}\n}",
+  "tool_events": 0
+}

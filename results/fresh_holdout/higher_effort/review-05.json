@@ -1,0 +1,24 @@
+{
+  "role": "review",
+  "batch": 5,
+  "model_requested": "gpt-6.2-sol",
+  "reasoning_effort": "medium",
+  "ids": [
+    "F05",
+    "F11",
+    "F17",
+    "F23"
+  ],
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "prompt_hash": "fda651d9c0affbd416bf05cf2a4f88866a9b2bc62062534521c19562a88ed155",
+  "collected_utc": "2026-11-18T17:05:47.250845+00:00",
+  "usage": {
+    "input_tokens": 15571,
+    "cached_input_tokens": 10368,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 732,
+    "reasoning_output_tokens": 478
+  },
+  "response": "{\n  \"F05\": {\"verdict\": \"ACCEPT\", \"reason\": \"Interval dynamic programming gives a unique optimal split after leaf 2, with cost 27 + 11 + 32 = 70 and unique optimal subtrees.\"},\n  \"F11\": {\"verdict\": \"ACCEPT\", \"reason\": \"At step 6, the probabilities at sites 5 and 4 are 108/729 and 130/729. The final odd step gives (3 × 108 + 130)/2187 = 454/2187, already reduced.\"},\n  \"F17\": {\"verdict\": \"ACCEPT\", \"reason\": \"All candidates start with four votes, so 4 is eliminated first. Transfers leave 1 alone in last place, and its ballots then give 2 a 10–6 lead over 3.\"},\n  \"F23\": {\"verdict\": \"ACCEPT\", \"reason\": \"The assignment [4, 3, 2, 1] scores 7 + 6 + 5 + 8 = 26. Every other first-row choice falls short, and with column 4 fixed the remaining choices are uniquely optimal.\"}\n}",
+  "tool_events": 0
+}

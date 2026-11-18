@@ -1,0 +1,21 @@
+{
+  "role": "repair",
+  "batch": 4,
+  "model_requested": "gpt-6.2-sol",
+  "reasoning_effort": "low",
+  "ids": [
+    "F04"
+  ],
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "prompt_hash": "975352208152671db0395c14dccbf7a8ea2343c16723da925f492f7e8d2ea11e",
+  "collected_utc": "2026-11-18T17:03:17.777545+00:00",
+  "usage": {
+    "input_tokens": 15177,
+    "cached_input_tokens": 13952,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 140,
+    "reasoning_output_tokens": 124
+  },
+  "response": "{\"F04\":[12,11,3]}",
+  "tool_events": 0
+}

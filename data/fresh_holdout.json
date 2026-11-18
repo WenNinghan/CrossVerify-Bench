@@ -1,0 +1,287 @@
+[
+  {
+    "id": "F01",
+    "domain": "algorithm",
+    "family": "lfu",
+    "prompt": "An empty capacity-3 cache serves pages [4, 2, 3, 2, 5, 4, 4, 3, 2, 6, 5, 4, 6, 3, 2, 3, 6], left to right. A miss inserts with frequency 1, a hit increments frequency, and either sets its last-use time to now. Before inserting into a full cache evict the resident with lowest frequency, breaking ties by least recent use. Reinserted pages start at 1. Give [miss count, resident IDs in ascending order ...]. Return just the requested JSON array of integers.",
+    "answer": [
+      11,
+      2,
+      4,
+      6
+    ]
+  },
+  {
+    "id": "F02",
+    "domain": "algorithm",
+    "family": "lfu",
+    "prompt": "An empty capacity-4 cache serves pages [3, 6, 2, 1, 2, 4, 6, 5, 3, 6, 1, 7, 1, 2, 4, 4, 5, 3, 1, 7, 2], left to right. A miss inserts with frequency 1, a hit increments frequency, and either sets its last-use time to now. Before inserting into a full cache evict the resident with lowest frequency, breaking ties by least recent use. Reinserted pages start at 1. Give [miss count, resident IDs in ascending order ...]. Return just the requested JSON array of integers.",
+    "answer": [
+      14,
+      2,
+      4,
+      6,
+      7
+    ]
+  },
+  {
+    "id": "F03",
+    "domain": "algorithm",
+    "family": "variable_josephus",
+    "prompt": "Players 1 through 11 sit clockwise. Start at player 1, count them as 1, and remove the player counted as 4. Starting at the removed player's clockwise successor, count that successor as 1 and remove the player at count 1+(previously removed ID modulo 5). Repeat this rule until one remains. Give [third removed ID, seventh removed ID, last remaining ID]. Return just the requested JSON array of integers.",
+    "answer": [
+      3,
+      1,
+      5
+    ]
+  },
+  {
+    "id": "F04",
+    "domain": "algorithm",
+    "family": "variable_josephus",
+    "prompt": "Players 1 through 13 sit clockwise. Start at player 1, count them as 1, and remove the player counted as 6. Starting at the removed player's clockwise successor, count that successor as 1 and remove the player at count 1+(previously removed ID modulo 5). Repeat this rule until one remains. Give [third removed ID, seventh removed ID, last remaining ID]. Return just the requested JSON array of integers.",
+    "answer": [
+      12,
+      11,
+      3
+    ]
+  },
+  {
+    "id": "F05",
+    "domain": "algorithm",
+    "family": "alphabetic_merge",
+    "prompt": "Leaves have ordered weights [4, 7, 2, 6, 3, 5]. Pick a full ordered binary parenthesization preserving that leaf order. Its cost sums the total descendant leaf weight at every internal node. Count different parenthesizations, not execution orders. Give [minimum cost, number of parenthesizations achieving it]. Return just the requested JSON array of integers.",
+    "answer": [
+      70,
+      1
+    ]
+  },
+  {
+    "id": "F06",
+    "domain": "algorithm",
+    "family": "alphabetic_merge",
+    "prompt": "Leaves have ordered weights [5, 2, 5, 3, 2, 7, 4]. Pick a full ordered binary parenthesization preserving that leaf order. Its cost sums the total descendant leaf weight at every internal node. Count different parenthesizations, not execution orders. Give [minimum cost, number of parenthesizations achieving it]. Return just the requested JSON array of integers.",
+    "answer": [
+      78,
+      1
+    ]
+  },
+  {
+    "id": "F07",
+    "domain": "algorithm",
+    "family": "deferred_acceptance",
+    "prompt": "Four residents, IDs 1 to 4, propose to hospitals in preference order [[1, 2, 3], [1, 3, 2], [2, 1], [3, 2, 1]], one list per resident. Hospital preference lists for hospitals 1 through 3 are [[3, 2, 4, 1], [4, 1, 3, 2], [1, 3, 4, 2]]. Each hospital keeps its most preferred proposer so far, capacity one. Rejected residents continue down their lists. Return the final hospital for residents 1,2,3,4, using zero if unmatched. Return just the requested JSON array of integers.",
+    "answer": [
+      2,
+      0,
+      1,
+      3
+    ]
+  },
+  {
+    "id": "F08",
+    "domain": "algorithm",
+    "family": "deferred_acceptance",
+    "prompt": "Four residents, IDs 1 to 4, propose to hospitals in preference order [[2, 1], [2, 3, 1], [3, 1, 2], [3, 2, 1]], one list per resident. Hospital preference lists for hospitals 1 through 3 are [[2, 1, 4, 3], [4, 2, 1, 3], [1, 3, 2, 4]]. Each hospital keeps its most preferred proposer so far, capacity one. Rejected residents continue down their lists. Return the final hospital for residents 1,2,3,4, using zero if unmatched. Return just the requested JSON array of integers.",
+    "answer": [
+      0,
+      1,
+      3,
+      2
+    ]
+  },
+  {
+    "id": "F09",
+    "domain": "quantitative",
+    "family": "isotonic_fit",
+    "prompt": "Given response values [7, 1, 5, 4, 2, 8] with positive weights [2, 1, 2, 3, 1, 2], fit nondecreasing values z_i by minimizing sum_i w_i(z_i-y_i)^2. Count distinct fitted levels; take the UNweighted sum of all fitted z_i. Give [number of levels, numerator of the sum, denominator] with the fraction reduced. Return just the requested JSON array of integers.",
+    "answer": [
+      2,
+      89,
+      3
+    ]
+  },
+  {
+    "id": "F10",
+    "domain": "quantitative",
+    "family": "isotonic_fit",
+    "prompt": "Given response values [6, 2, 8, 1, 5, 3, 7] with positive weights [1, 3, 2, 2, 1, 3, 2], fit nondecreasing values z_i by minimizing sum_i w_i(z_i-y_i)^2. Count distinct fitted levels; take the UNweighted sum of all fitted z_i. Give [number of levels, numerator of the sum, denominator] with the fraction reduced. Return just the requested JSON array of integers.",
+    "answer": [
+      3,
+      29,
+      1
+    ]
+  },
+  {
+    "id": "F11",
+    "domain": "quantitative",
+    "family": "alternating_walk",
+    "prompt": "A particle starts at 2 on lattice sites 0..5. At each odd-numbered step it moves +1 with probability 1/3, and at each even step with probability 2/3; otherwise it moves -1. Endpoints are absorbing. After exactly 7 steps, give the probability it is at 5 as [reduced numerator, denominator]. Return just the requested JSON array of integers.",
+    "answer": [
+      454,
+      2187
+    ]
+  },
+  {
+    "id": "F12",
+    "domain": "quantitative",
+    "family": "alternating_walk",
+    "prompt": "A particle starts at 3 on lattice sites 0..6. At each odd-numbered step it moves +1 with probability 1/3, and at each even step with probability 2/3; otherwise it moves -1. Endpoints are absorbing. After exactly 8 steps, give the probability it is at 6 as [reduced numerator, denominator]. Return just the requested JSON array of integers.",
+    "answer": [
+      154,
+      729
+    ]
+  },
+  {
+    "id": "F13",
+    "domain": "quantitative",
+    "family": "viterbi",
+    "prompt": "Two states 0 and 1 have initial probabilities (0.6,0.4), transition rows ((0.8,0.2),(0.3,0.7)), and emission rows for values (0,1) of ((0.8,0.2),(0.2,0.8)). Emit the first observation in the initial state. Observations are [1, 0, 1, 1, 0, 0, 1]. Return the single maximum-joint-probability state path, earliest lexicographic path on a tie. Return just the requested JSON array of integers.",
+    "answer": [
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "id": "F14",
+    "domain": "quantitative",
+    "family": "viterbi",
+    "prompt": "Two states 0 and 1 have initial probabilities (0.6,0.4), transition rows ((0.8,0.2),(0.3,0.7)), and emission rows for values (0,1) of ((0.8,0.2),(0.2,0.8)). Emit the first observation in the initial state. Observations are [0, 1, 1, 0, 1, 0, 0, 1]. Return the single maximum-joint-probability state path, earliest lexicographic path on a tie. Return just the requested JSON array of integers.",
+    "answer": [
+      0,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  {
+    "id": "F15",
+    "domain": "quantitative",
+    "family": "pooled_bayes",
+    "prompt": "Choose urn A or B by a fair coin. A contains 4 marked and 6 plain balls; B contains 2 marked and 5 plain. Draw 3 balls without replacement; one pooled detector returns positive with probability 4/5 when any draw is marked and 1/10 otherwise. Given a positive report, give P(urn A) as [reduced numerator, denominator]. Return just the requested JSON array of integers.",
+    "answer": [
+      41,
+      77
+    ]
+  },
+  {
+    "id": "F16",
+    "domain": "quantitative",
+    "family": "pooled_bayes",
+    "prompt": "Choose urn A or B by a fair coin. A contains 3 marked and 4 plain balls; B contains 5 marked and 6 plain. Draw 4 balls without replacement; one pooled detector returns positive with probability 4/5 when any draw is marked and 1/10 otherwise. Given a positive report, give P(urn A) as [reduced numerator, denominator]. Return just the requested JSON array of integers.",
+    "answer": [
+      66,
+      131
+    ]
+  },
+  {
+    "id": "F17",
+    "domain": "records",
+    "family": "transfer_ballots",
+    "prompt": "A ballot group (multiplicity, preference list) votes for its first remaining preference. Groups: [(4, [1, 2]), (4, [2, 4, 3]), (3, [3, 1]), (2, [4, 3]), (2, [4, 2]), (1, [3])]. Candidates are 1..4. Exhausted ballots contribute nothing. In each round eliminate the fewest-vote candidate, breaking equal-lowest ties by eliminating the HIGHEST ID. Continue to one survivor even if someone has a majority. Give [first eliminated, second eliminated, third eliminated, survivor]. Return just the requested JSON array of integers.",
+    "answer": [
+      4,
+      1,
+      3,
+      2
+    ]
+  },
+  {
+    "id": "F18",
+    "domain": "records",
+    "family": "transfer_ballots",
+    "prompt": "A ballot group (multiplicity, preference list) votes for its first remaining preference. Groups: [(5, [1, 4]), (4, [2, 1]), (4, [3, 2]), (3, [4, 3]), (2, [4]), (1, [2, 3])]. Candidates are 1..4. Exhausted ballots contribute nothing. In each round eliminate the fewest-vote candidate, breaking equal-lowest ties by eliminating the HIGHEST ID. Continue to one survivor even if someone has a majority. Give [first eliminated, second eliminated, third eliminated, survivor]. Return just the requested JSON array of integers.",
+    "answer": [
+      3,
+      4,
+      1,
+      2
+    ]
+  },
+  {
+    "id": "F19",
+    "domain": "records",
+    "family": "bitemporal_asof",
+    "prompt": "A price version is (row ID, effective date, published date, price). Versions: [(1, 1, 4, 12), (2, 3, 5, 19), (3, 1, 9, 9), (4, 6, 8, 26), (5, 4, 11, 21)]. A query (valid day, knowledge day) considers effective dates at most valid day and published dates at most knowledge day; among eligible rows choose greatest effective date, then latest publication. Return one price per query in order, -1 if none. Queries: [(2, 3), (3, 7), (2, 10), (5, 12), (7, 12)]. Return just the requested JSON array of integers.",
+    "answer": [
+      -1,
+      19,
+      9,
+      21,
+      26
+    ]
+  },
+  {
+    "id": "F20",
+    "domain": "records",
+    "family": "bitemporal_asof",
+    "prompt": "A price version is (row ID, effective date, published date, price). Versions: [(1, 2, 2, 14), (2, 4, 6, 17), (3, 2, 7, 11), (4, 5, 10, 25), (5, 4, 9, 16), (6, 7, 11, 30)]. A query (valid day, knowledge day) considers effective dates at most valid day and published dates at most knowledge day; among eligible rows choose greatest effective date, then latest publication. Return one price per query in order, -1 if none. Queries: [(1, 12), (4, 8), (4, 10), (6, 7), (7, 10)]. Return just the requested JSON array of integers.",
+    "answer": [
+      -1,
+      17,
+      16,
+      17,
+      25
+    ]
+  },
+  {
+    "id": "F21",
+    "domain": "records",
+    "family": "idempotent_ledger",
+    "prompt": "Process these events in arrival order: [(1, 'P', 5), (2, 'R', 1), (2, 'P', 7), (3, 'R', 1), (4, 'P', 9), (5, 'R', 7), (7, 'P', 8), (8, 'R', 4)]. Each triple is (event ID, kind, value). Mark each first-seen event ID seen even if its operation fails, and ignore later duplicate IDs. P creates a payment of that amount; R reverses the still-active payment whose event ID equals value, doing nothing if unavailable. Return [total active amount, number of active payments, number of successful reversals]. Return just the requested JSON array of integers.",
+    "answer": [
+      8,
+      1,
+      2
+    ]
+  },
+  {
+    "id": "F22",
+    "domain": "records",
+    "family": "idempotent_ledger",
+    "prompt": "Process these events in arrival order: [(1, 'R', 2), (2, 'P', 11), (3, 'P', 6), (4, 'R', 2), (5, 'R', 2), (1, 'P', 9), (6, 'P', 4), (7, 'R', 3), (8, 'R', 6)]. Each triple is (event ID, kind, value). Mark each first-seen event ID seen even if its operation fails, and ignore later duplicate IDs. P creates a payment of that amount; R reverses the still-active payment whose event ID equals value, doing nothing if unavailable. Return [total active amount, number of active payments, number of successful reversals]. Return just the requested JSON array of integers.",
+    "answer": [
+      0,
+      0,
+      3
+    ]
+  },
+  {
+    "id": "F23",
+    "domain": "records",
+    "family": "record_link",
+    "prompt": "Match each row to a distinct column using similarity weights [[9, 5, 1, 7], [7, 2, 6, 1], [6, 5, 4, 3], [8, 1, 5, 4]]. Indices start at 1. Maximize total weight; if several assignments tie use the lexicographically smallest sequence of column IDs in row order. Give [maximum total, count of maximizing assignments, chosen columns in row order ...]. Return just the requested JSON array of integers.",
+    "answer": [
+      26,
+      1,
+      4,
+      3,
+      2,
+      1
+    ]
+  },
+  {
+    "id": "F24",
+    "domain": "records",
+    "family": "record_link",
+    "prompt": "Match each row to a distinct column using similarity weights [[8, 3, 7, 6, 5], [4, 7, 2, 5, 7], [7, 8, 5, 1, 5], [6, 4, 8, 2, 7], [6, 8, 3, 5, 3]]. Indices start at 1. Maximize total weight; if several assignments tie use the lexicographically smallest sequence of column IDs in row order. Give [maximum total, count of maximizing assignments, chosen columns in row order ...]. Return just the requested JSON array of integers.",
+    "answer": [
+      36,
+      2,
+      1,
+      5,
+      2,
+      3,
+      4
+    ]
+  }
+]

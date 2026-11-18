@@ -1,0 +1,24 @@
+{
+  "role": "review",
+  "batch": 3,
+  "model_requested": "gpt-6.2-sol",
+  "reasoning_effort": "medium",
+  "ids": [
+    "F03",
+    "F09",
+    "F15",
+    "F21"
+  ],
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "prompt_hash": "54b51413dcf47a989c5717587b414ab2e85be322c7b6f3ca44ae2598c35d1766",
+  "collected_utc": "2026-11-18T17:05:07.751491+00:00",
+  "usage": {
+    "input_tokens": 15583,
+    "cached_input_tokens": 10368,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 433,
+    "reasoning_output_tokens": 238
+  },
+  "response": "{\n  \"F03\": {\"verdict\": \"ACCEPT\", \"reason\": \"The third and seventh eliminations are 3 and 1, and player 5 is the survivor.\"},\n  \"F09\": {\"verdict\": \"ACCEPT\", \"reason\": \"The first five values pool at 13/3, and the last stays at 8, giving two levels and an unweighted sum of 89/3.\"},\n  \"F15\": {\"verdict\": \"ACCEPT\", \"reason\": \"The positive-report probabilities are 41/60 for A and 36/60 for B. Equal priors give a posterior of 41/77 for A.\"},\n  \"F21\": {\"verdict\": \"ACCEPT\", \"reason\": \"Events 2 and 8 successfully reverse payments, the duplicate ID 2 is ignored, and only the payment of 8 remains active.\"}\n}",
+  "tool_events": 0
+}

@@ -1,0 +1,24 @@
+{
+  "role": "review",
+  "batch": 4,
+  "model_requested": "gpt-6.2-sol",
+  "reasoning_effort": "medium",
+  "ids": [
+    "F04",
+    "F10",
+    "F16",
+    "F22"
+  ],
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "prompt_hash": "74807b262901b5f8ad99eeb9507ff407373c91a650b198d1e47d92eee5d8489b",
+  "collected_utc": "2026-11-18T17:02:49.209299+00:00",
+  "usage": {
+    "input_tokens": 15602,
+    "cached_input_tokens": 10368,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 522,
+    "reasoning_output_tokens": 334
+  },
+  "response": "{\n  \"F04\": {\"verdict\": \"REJECT\", \"reason\": \"The third and seventh removals are 12 and 11, and player 3 remains.\"},\n  \"F10\": {\"verdict\": \"ACCEPT\", \"reason\": \"The fit is [3, 3, 4, 4, 4, 4, 7], with three distinct levels and unweighted sum 29.\"},\n  \"F16\": {\"verdict\": \"ACCEPT\", \"reason\": \"The positive-report probabilities for A and B are 39/50 and 169/220, yielding 66/131 with equal priors.\"},\n  \"F22\": {\"verdict\": \"ACCEPT\", \"reason\": \"Events 4, 7, and 8 successfully reverse all three payments, and the duplicate event 1 is ignored.\"}\n}",
+  "tool_events": 0
+}

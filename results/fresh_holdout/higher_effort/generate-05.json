@@ -1,0 +1,24 @@
+{
+  "role": "generate",
+  "batch": 5,
+  "model_requested": "gpt-6.2-sol",
+  "reasoning_effort": "high",
+  "ids": [
+    "F05",
+    "F11",
+    "F17",
+    "F23"
+  ],
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "prompt_hash": "e81197654454d0eb4588052076eaf2c90dafe9dadeeb04513d10dc9da4d06d0f",
+  "collected_utc": "2026-11-18T17:04:25.538612+00:00",
+  "usage": {
+    "input_tokens": 15492,
+    "cached_input_tokens": 10368,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 1026,
+    "reasoning_output_tokens": 955
+  },
+  "response": "{\n  \"F05\": [70, 1],\n  \"F11\": [454, 2187],\n  \"F17\": [4, 1, 3, 2],\n  \"F23\": [26, 1, 4, 3, 2, 1]\n}",
+  "tool_events": 0
+}

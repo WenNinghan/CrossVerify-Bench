@@ -1,12 +1,12 @@
-r"""Execute the 100% Real-API Multi-Family Live LLM Benchmark for CrossVerify-Bench.
+r"""Replay or collect multi-family responses for the CrossVerify live benchmark.
 
-Evaluates 13 live configurations across 5 distinct Chinese model families
+Evaluates 15 configurations across 5 distinct model families
 (`DeepSeek`, `Qwen`, `GLM`, `MiMo`, `MiniMax`) on the 45-task `CrossVerify-Live-45`
 suite via the `/v1/messages` protocol.
 
 Security Note:
     Reads `CROSSVERIFY_API_KEY` and `CROSSVERIFY_BASE_URL` strictly from environment
-    variables at runtime. Zero credentials are ever written to disk or trace logs.
+    variables at runtime. The response-record schema excludes credential fields.
 
 Outputs:
     - ``results/live_llm_traces.jsonl``: Verbatim append-only raw LLM responses,
@@ -14,12 +14,14 @@ Outputs:
     - ``results/live_llm_benchmark.json``: Complete empirical accuracy, token cost,
       latency, empirical Markov $(\hat{\alpha}, \hat{\beta}, \hat{q}_{I\to C}, \hat{q}_{C\to I})$
       transition audits, verbatim Verification Harm case studies, and Pareto metrics.
-    - ``results/live_llm_comparison.csv``: Clean summary table across all 13 live configs.
+    - ``results/live_llm_comparison.csv``: Summary table across all 15 configurations.
 """
 
 from __future__ import annotations
 
+import argparse
 import concurrent.futures
+import copy
 import hashlib
 import inspect
 import json
@@ -129,7 +131,7 @@ def zero_oracle_semantic_consensus(task: BenchmarkTask, txt_a: str, txt_b: str) 
             else:
                 arr = [rng.randint(-9, 12) for _ in range(rng.randint(0, 7))]
                 args = (arr,)
-            if fn_a(*args) != fn_b(*args):
+            if fn_a(*copy.deepcopy(args)) != fn_b(*copy.deepcopy(args)):
                 return False
         return True
     except Exception:
@@ -145,6 +147,7 @@ class CachedLiveRunner:
         self.trace_path.parent.mkdir(parents=True, exist_ok=True)
         self._lock = threading.Lock()
         self._cache: Dict[str, Dict[str, Any]] = {}
+        self.used_keys: set[str] = set()
         if self.trace_path.exists():
             for line in self.trace_path.read_text(encoding="utf-8").splitlines():
                 if line.strip():
@@ -173,13 +176,15 @@ class CachedLiveRunner:
         prompt: str,
         disable_thinking: bool = False,
         temperature: float = 0.0,
-        max_tokens: int = 6144,
+        max_tokens: int = 16384,
         slot: int = 0,
     ) -> Dict[str, Any]:
         key = self._make_key(model, disable_thinking, temperature, slot, role, task_id, prompt)
         with self._lock:
             hit = self._cache.get(key)
-        if hit is not None and hit.get("text", "").strip() != "":
+            self.used_keys.add(key)
+        # Protocol failures are observed outcomes. Retrying them selectively biases the evaluation.
+        if hit is not None:
             return hit
 
         if self.client is None:
@@ -234,14 +239,20 @@ def build_verify_prompt(task: BenchmarkTask, candidate: str) -> str:
 
 
 def parse_verdict(raw_txt: str) -> Tuple[bool, str]:
+    import re as _re
+
     try:
         obj = extract_clean_json(raw_txt)
         v = str(obj.get("verdict", "")).upper()
         crit = str(obj.get("critique", raw_txt))
-        return ("ACCEPT" in v and "REJECT" not in v), crit
+        has_acc = bool(_re.search(r"\bACCEPT\b", v))
+        has_rej = bool(_re.search(r"\bREJECT\b", v))
+        return (has_acc and not has_rej), crit
     except Exception:
         up = raw_txt.upper()
-        return ('"ACCEPT"' in up or ("ACCEPT" in up and "REJECT" not in up)), raw_txt.strip()
+        has_acc = bool(_re.search(r'\bVERDICT\b[^A-Z]{0,12}\bACCEPT\b|"ACCEPT"', up))
+        has_rej = bool(_re.search(r'\bVERDICT\b[^A-Z]{0,12}\bREJECT\b|"REJECT"', up))
+        return (has_acc and not has_rej), raw_txt.strip()
 
 
 def build_repair_prompt(task: BenchmarkTask, prev_cand: str, critique: str) -> str:
@@ -266,7 +277,10 @@ def build_judge_prompt(task: BenchmarkTask, cand_a: str, model_a: str, cand_b: s
 
 
 def main() -> None:
-    api_key = os.environ.get("CROSSVERIFY_API_KEY") or os.environ.get("ANTHROPIC_API_KEY") or ""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--offline", action="store_true", help="Only replay local records, even if API credentials are configured.")
+    args = parser.parse_args()
+    api_key = "" if args.offline else (os.environ.get("CROSSVERIFY_API_KEY") or os.environ.get("ANTHROPIC_API_KEY") or "")
     base_url = os.environ.get("CROSSVERIFY_BASE_URL", "https://api.anthropic.com")
 
     t_global = time.perf_counter()
@@ -286,11 +300,11 @@ def main() -> None:
     # Step 1: Parallel execution of all base S1 & SC@K generations
     # ------------------------------------------------------------------
     base_models = [
-        ("qwen3.8-flash", True, 1024),
-        ("deepseek-flash", True, 1024),
-        ("minimax-m3.1-flash", False, 6144),
-        ("glm-5.3-flashx", False, 8192),
-        ("mimo-v2.6-flash", False, 8192),
+        ("qwen3.8-flash", True, 4096),
+        ("deepseek-flash", True, 4096),
+        ("minimax-m3.1-flash", False, 16384),
+        ("glm-5.3-flashx", False, 16384),
+        ("mimo-v2.6-flash", False, 16384),
     ]
 
     gen_jobs: List[Dict[str, Any]] = []
@@ -318,7 +332,7 @@ def main() -> None:
                     "prompt": task.prompt,
                     "disable_thinking": True,
                     "temperature": 0.7,
-                    "max_tokens": 1024,
+                    "max_tokens": 4096,
                     "slot": k_slot,
                 }
             )
@@ -331,12 +345,12 @@ def main() -> None:
                     "prompt": task.prompt,
                     "disable_thinking": True,
                     "temperature": 0.7,
-                    "max_tokens": 1024,
+                    "max_tokens": 4096,
                     "slot": k_slot,
                 }
             )
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=16) as ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as ex:
         futs = [ex.submit(runner.invoke, **jb) for jb in gen_jobs]
         done_cnt = 0
         for fut in concurrent.futures.as_completed(futs):
@@ -533,50 +547,50 @@ def main() -> None:
         return rows, audit
 
     print("[LiveBench] Running S3 Cross-Verification & Markov Harm/Gain Audits...")
-    # 1) Mid/Fast Generator + Weak Uncalibrated Critic -> Severe Verification Harm!
+    # 1) Fast Generator + Uncalibrated Fast Critic
     s3_ds_weak_rows, s3_ds_weak_audit = eval_s3_pair(
         "S3_DeepSeek_WeakQwenCritic",
-        ("deepseek-flash", True, 1024),
-        ("qwen3.8-flash", True, 1024),
+        ("deepseek-flash", True, 4096),
+        ("qwen3.8-flash", True, 4096),
         use_microcheck=False,
     )
-    # 2) Strong Reasoning Generator (MiniMax-M3.1) + Uncalibrated Weak Critic (Qwen-Flash no-think)
+    # 2) Strong Reasoning Generator (MiniMax-M3.1) + Uncalibrated Fast Critic (Qwen-Flash no-think, configured cap 4096)
     s3_mm_weak_rows, s3_mm_weak_audit = eval_s3_pair(
         "S3_MiniMax_WeakQwenCritic",
-        ("minimax-m3.1-flash", False, 6144),
-        ("qwen3.8-flash", True, 1024),
+        ("minimax-m3.1-flash", False, 16384),
+        ("qwen3.8-flash", True, 4096),
         use_microcheck=False,
     )
-    # 3) Strong GLM-5.3-FlashX + Uncalibrated Weak Critic (Qwen-Flash no-think)
+    # 3) Strong GLM-5.3-FlashX + Uncalibrated Fast Critic (Qwen-Flash no-think, configured cap 4096)
     s3_glm_weak_rows, s3_glm_weak_audit = eval_s3_pair(
         "S3_GLM53_WeakQwenCritic",
-        ("glm-5.3-flashx", False, 8192),
-        ("qwen3.8-flash", True, 1024),
+        ("glm-5.3-flashx", False, 16384),
+        ("qwen3.8-flash", True, 4096),
         use_microcheck=False,
     )
     # 4) Calibrated Tool-Grounded Cross-Verification: DeepSeek-Flash(no-think) + MicroCheck + GLM-5.3-FlashX Verifier!
     s3_ds_toolglm_rows, s3_ds_toolglm_audit = eval_s3_pair(
         "S3_DeepSeek_ToolGLMVer",
-        ("deepseek-flash", True, 1024),
-        ("glm-5.3-flashx", False, 6144),
+        ("deepseek-flash", True, 4096),
+        ("glm-5.3-flashx", False, 16384),
         use_microcheck=True,
     )
     # 5) Calibrated Tool-Grounded Cross-Verification on MiniMax-M3.1 + GLM-5.3-FlashX Verifier!
     s3_mm_toolglm_rows, s3_mm_toolglm_audit = eval_s3_pair(
         "S3_MiniMax_ToolGLMVer",
-        ("minimax-m3.1-flash", False, 6144),
-        ("glm-5.3-flashx", False, 6144),
+        ("minimax-m3.1-flash", False, 16384),
+        ("glm-5.3-flashx", False, 16384),
         use_microcheck=True,
     )
 
     # ------------------------------------------------------------------
-    # Step 3: S4 Heterogeneous Debate DAG & S5 ParetoAdaptiveRouter
+    # Step 3: S4 Heterogeneous Debate DAG & S5 ParetoAdaptiveRouter (5-Fold Out-of-Fold CV!)
     # ------------------------------------------------------------------
-    print("[LiveBench] Running S4 Heterogeneous Debate DAG & S5 ParetoAdaptiveRouter...")
+    print("[LiveBench] Running S4 Heterogeneous Debate DAG & S5 ParetoAdaptiveRouter (5-Fold Out-of-Fold CV)...")
 
     def run_s4_debate(task: BenchmarkTask) -> Dict[str, Any]:
-        ra = get_s1(task, "glm-5.3-flashx", False, 8192)
-        rb = get_s1(task, "mimo-v2.6-flash", False, 8192)
+        ra = get_s1(task, "glm-5.3-flashx", False, 16384)
+        rb = get_s1(task, "mimo-v2.6-flash", False, 16384)
         tok = ra["total_tokens"] + rb["total_tokens"]
         lat = max(ra["latency_ms"], rb["latency_ms"])  # parallel proposers!
 
@@ -588,7 +602,7 @@ def main() -> None:
             prompt=build_judge_prompt(task, ra["text"], "glm-5.3-flashx", rb["text"], "mimo-v2.6-flash"),
             disable_thinking=False,
             temperature=0.0,
-            max_tokens=6144,
+            max_tokens=16384,
         )
         tok += rj["total_tokens"]
         lat += rj["latency_ms"]
@@ -601,19 +615,38 @@ def main() -> None:
             "latency_ms": lat,
         }
 
-    # Compute unlabeled prompt complexity quantiles across the task stream (zero oracle access)
-    unlabeled_scores = np.array([extract_prompt_features(t.prompt).complexity_score for t in suite], dtype=float)
-    q_eco_t1 = float(np.quantile(unlabeled_scores, 0.80))
-    q_strict_t1 = float(np.quantile(unlabeled_scores, 0.65))
-    q_strict_t2 = float(np.quantile(unlabeled_scores, 0.88))
+    # Strict 5-Fold Out-of-Fold Cross-Validation for prompt-complexity quantile calibration
+    # Each of the 9 (domain, difficulty) strata has 5 tasks -> deterministic fold index 0..4 per stratum
+    fold_of_task: Dict[str, int] = {}
+    stratum_counters: Dict[Tuple[str, str], int] = defaultdict(int)
+    for t in suite:
+        st_key = (t.domain, t.difficulty)
+        fold_of_task[t.task_id] = stratum_counters[st_key] % 5
+        stratum_counters[st_key] += 1
+
+    fold_thresholds: Dict[int, Tuple[float, float, float]] = {}
+    for f_idx in range(5):
+        train_scores = np.array(
+            [
+                extract_prompt_features(t.prompt).complexity_score
+                for t in suite
+                if fold_of_task[t.task_id] != f_idx
+            ],
+            dtype=float,
+        )
+        fold_thresholds[f_idx] = (
+            float(np.quantile(train_scores, 0.80)),
+            float(np.quantile(train_scores, 0.65)),
+            float(np.quantile(train_scores, 0.88)),
+        )
 
     def run_s5_router(task: BenchmarkTask, mode: str) -> Dict[str, Any]:
-        """Zero-Oracle OmniHarness ParetoAdaptiveRouter.
+        """Zero-Oracle OmniHarness ParetoAdaptiveRouter evaluated via 5-Fold Out-of-Fold CV.
 
-        Combines strictly observable prompt complexity quantiles, 0-token ``runtime_microcheck``,
-        Differential Property Fuzzing / canonical JSON equivalence (``zero_oracle_semantic_consensus``),
-        and a 2-of-3 Heterogeneous Cross-Family Disagreement Gate without double-billing cached calls.
+        Prompt-complexity quantiles are fitted strictly on the 36 training tasks of the outer fold,
+        ensuring zero test-set threshold leakage!
         """
+        q_eco_t1, q_strict_t1, q_strict_t2 = fold_thresholds[fold_of_task[task.task_id]]
         s_score = extract_prompt_features(task.prompt).complexity_score
         tau_easy = q_eco_t1 if mode == "eco" else q_strict_t1
 
@@ -621,10 +654,10 @@ def main() -> None:
         lat = 2.0  # local feature extraction + differential fuzzing overhead (ms)
         t1_valid_cands: List[Tuple[str, str]] = []  # (family_tag, text)
 
-        # Tier 1: Fast Dual-Family Consensus Probe (DeepSeek-Flash x Qwen3.8-Flash, no-think, ~770 tok total)
+        # Tier 1: Fast Dual-Family Consensus Probe (DeepSeek-Flash x Qwen3.8-Flash, no-think)
         if s_score <= tau_easy:
-            r_ds = get_s1(task, "deepseek-flash", True, 1024)
-            r_qw = get_s1(task, "qwen3.8-flash", True, 1024)
+            r_ds = get_s1(task, "deepseek-flash", True, 4096)
+            r_qw = get_s1(task, "qwen3.8-flash", True, 4096)
             tok += r_ds["total_tokens"] + r_qw["total_tokens"]
             lat += max(r_ds["latency_ms"], r_qw["latency_ms"])
 
@@ -649,7 +682,7 @@ def main() -> None:
         # Tier 2: Mid-Cost Reasoning Escalation (MiMo-V2.6-Flash + Runtime MicroCheck)
         cached_mimo: Optional[Dict[str, Any]] = None
         if mode == "eco":
-            cached_mimo = get_s1(task, "mimo-v2.6-flash", False, 8192)
+            cached_mimo = get_s1(task, "mimo-v2.6-flash", False, 16384)
             tok += cached_mimo["total_tokens"]
             lat += cached_mimo["latency_ms"]
             ok_mimo, _ = task.runtime_microcheck(cached_mimo["text"])
@@ -665,7 +698,7 @@ def main() -> None:
                     "shortcircuit": True,
                 }
         elif s_score <= q_strict_t2:
-            cached_mimo = get_s1(task, "mimo-v2.6-flash", False, 8192)
+            cached_mimo = get_s1(task, "mimo-v2.6-flash", False, 16384)
             tok += cached_mimo["total_tokens"]
             lat += cached_mimo["latency_ms"]
             ok_mimo, _ = task.runtime_microcheck(cached_mimo["text"])
@@ -685,13 +718,13 @@ def main() -> None:
                 }
 
         # Tier 3: Heterogeneous Dual-Family Reasoning (GLM-5.3 x MiMo-V2.6) + Smart 2-of-3 Disagreement Gate!
-        ra = get_s1(task, "glm-5.3-flashx", False, 8192)
+        ra = get_s1(task, "glm-5.3-flashx", False, 16384)
         if cached_mimo is not None:
             rb = cached_mimo
             tok += ra["total_tokens"]
             lat += ra["latency_ms"]
         else:
-            rb = get_s1(task, "mimo-v2.6-flash", False, 8192)
+            rb = get_s1(task, "mimo-v2.6-flash", False, 16384)
             tok += ra["total_tokens"] + rb["total_tokens"]
             lat += max(ra["latency_ms"], rb["latency_ms"])
 
@@ -699,7 +732,6 @@ def main() -> None:
         okb, _ = task.runtime_microcheck(rb["text"])
 
         if oka and okb and zero_oracle_semantic_consensus(task, ra["text"], rb["text"]):
-            # SMART DISAGREEMENT GATE: Zero judge tokens needed!
             return {
                 "task_id": task.task_id,
                 "domain": task.domain,
@@ -734,7 +766,7 @@ def main() -> None:
             }
 
         # Genuine semantic disagreement between GLM-5.3 and MiMo-V2.6 -> check 3rd independent family quorum (MiniMax-M3.1)!
-        rc = get_s1(task, "minimax-m3.1-flash", False, 6144)
+        rc = get_s1(task, "minimax-m3.1-flash", False, 16384)
         tok += rc["total_tokens"]
         lat += rc["latency_ms"]
         okc, _ = task.runtime_microcheck(rc["text"])
@@ -769,7 +801,7 @@ def main() -> None:
             prompt=build_judge_prompt(task, ra["text"], "glm-5.3-flashx", rb["text"], "mimo-v2.6-flash"),
             disable_thinking=False,
             temperature=0.0,
-            max_tokens=6144,
+            max_tokens=16384,
         )
         tok += rj["total_tokens"]
         lat += rj["latency_ms"]
@@ -790,7 +822,7 @@ def main() -> None:
         s5_strict_rows = list(ex.map(lambda t: run_s5_router(t, "strict"), suite))
 
     # ------------------------------------------------------------------
-    # Step 4: Assemble All 13 Live Configurations & Compute Pareto Metrics
+    # Step 4: Assemble All 15 Live Configurations & Compute Pareto Metrics
     # ------------------------------------------------------------------
     def summarize_rows(cfg_id: str, label: str, family: str, rows: List[Dict[str, Any]]) -> Dict[str, Any]:
         acc = float(np.mean([r["is_correct"] for r in rows]))
@@ -853,7 +885,7 @@ def main() -> None:
                     prompt=t.prompt,
                     disable_thinking=True,
                     temperature=0.7,
-                    max_tokens=1024,
+                    max_tokens=4096,
                     slot=s_idx,
                 )
                 for s_idx in range(1, k_samples + 1)
@@ -879,11 +911,11 @@ def main() -> None:
         return rows
 
     summaries = [
-        summarize_rows("S1_QwenFlash_NoThink", "SinglePass: Qwen3.8-Flash (NoThink)", "S1_SinglePass", make_s1_rows("qwen3.8-flash", True, 1024)),
-        summarize_rows("S1_DeepSeekFlash_NoThink", "SinglePass: DeepSeek-Flash (NoThink)", "S1_SinglePass", make_s1_rows("deepseek-flash", True, 1024)),
-        summarize_rows("S1_MiniMax_M31", "SinglePass: MiniMax-M3.1-Flash", "S1_SinglePass", make_s1_rows("minimax-m3.1-flash", False, 6144)),
-        summarize_rows("S1_GLM53_FlashX", "SinglePass: GLM-5.3-FlashX", "S1_SinglePass", make_s1_rows("glm-5.3-flashx", False, 8192)),
-        summarize_rows("S1_MiMo_V26", "SinglePass: MiMo-V2.6-Flash", "S1_SinglePass", make_s1_rows("mimo-v2.6-flash", False, 8192)),
+        summarize_rows("S1_QwenFlash_NoThink", "SinglePass: Qwen3.8-Flash (NoThink)", "S1_SinglePass", make_s1_rows("qwen3.8-flash", True, 4096)),
+        summarize_rows("S1_DeepSeekFlash_NoThink", "SinglePass: DeepSeek-Flash (NoThink)", "S1_SinglePass", make_s1_rows("deepseek-flash", True, 4096)),
+        summarize_rows("S1_MiniMax_M31", "SinglePass: MiniMax-M3.1-Flash", "S1_SinglePass", make_s1_rows("minimax-m3.1-flash", False, 16384)),
+        summarize_rows("S1_GLM53_FlashX", "SinglePass: GLM-5.3-FlashX", "S1_SinglePass", make_s1_rows("glm-5.3-flashx", False, 16384)),
+        summarize_rows("S1_MiMo_V26", "SinglePass: MiMo-V2.6-Flash", "S1_SinglePass", make_s1_rows("mimo-v2.6-flash", False, 16384)),
         summarize_rows("S2_SC3_QwenFlash", "SC@3: Qwen3.8-Flash (NoThink)", "S2_SelfConsistency", make_sc_rows("qwen3.8-flash", 3)),
         summarize_rows("S2_SC5_DeepSeekFlash", "SC@5: DeepSeek-Flash (NoThink)", "S2_SelfConsistency", make_sc_rows("deepseek-flash", 5)),
         summarize_rows("S3_DeepSeek_WeakQwenCritic", "GenVerify: DeepSeek-Flash + Weak Qwen Critic", "S3_GenVerifyLoop", s3_ds_weak_rows),
@@ -892,8 +924,8 @@ def main() -> None:
         summarize_rows("S3_DeepSeek_ToolGLMVer", "GenVerify: DeepSeek-Flash + MicroCheck + GLM-5.3 Verifier", "S3_GenVerifyLoop", s3_ds_toolglm_rows),
         summarize_rows("S3_MiniMax_ToolGLMVer", "GenVerify: MiniMax-M3.1 + MicroCheck + GLM-5.3 Verifier", "S3_GenVerifyLoop", s3_mm_toolglm_rows),
         summarize_rows("S4_HeteroDebate_3Family", "DebateDAG: GLM-5.3 x MiMo-V2.6 -> MiniMax-M3 Judge", "S4_AdversarialDebateDAG", s4_rows),
-        summarize_rows("S5_ParetoRouter_Eco", "ParetoRouter-Eco (OmniHarness Fast+Mid+Gate)", "S5_ParetoAdaptiveRouter", s5_eco_rows),
-        summarize_rows("S5_ParetoRouter_Strict", "ParetoRouter-Strict (OmniHarness DualProbe+HeteroGate)", "S5_ParetoAdaptiveRouter", s5_strict_rows),
+        summarize_rows("S5_ParetoRouter_Eco", "ParetoRouter-Eco (5-Fold CV Fast+Mid+Gate)", "S5_ParetoAdaptiveRouter", s5_eco_rows),
+        summarize_rows("S5_ParetoRouter_Strict", "ParetoRouter-Strict (5-Fold CV DualProbe+HeteroGate)", "S5_ParetoAdaptiveRouter", s5_strict_rows),
     ]
 
     # Pareto analysis
@@ -930,9 +962,35 @@ def main() -> None:
     )
     knee = find_knee_point_2d(pts)
 
+    used_verdicts = [runner._cache[key] for key in runner.used_keys if runner._cache[key]["role"].startswith("verify_")]
+    structured_verdicts = 0
+    text_fallback_calls = 0
+    rejected_without_exact_verdict = 0
+    for rec in used_verdicts:
+        try:
+            verdict = extract_clean_json(rec["text"]).get("verdict", "")
+        except ValueError:
+            text_fallback_calls += 1
+            verdict = ""
+        if str(verdict).strip().upper() in {"ACCEPT", "REJECT"}:
+            structured_verdicts += 1
+        elif not parse_verdict(rec["text"])[0]:
+            rejected_without_exact_verdict += 1
+
     payload = {
-        "benchmark_name": "CrossVerify-Live-45 (100% Real Multi-Family LLM API Evaluation)",
+        "benchmark_name": "CrossVerify-Live-45 (archived multi-family API responses)",
         "protocol": "Anthropic /v1/messages",
+        "router_evaluation_protocol": "5-fold stratified out-of-fold cross-validation (zero test-set quantile leakage)",
+        "truncation_audit": "Historical records omit provider stop reasons; the number of truncated calls is unknown.",
+        "verifier_protocol": {
+            "used_verifier_calls": len(used_verdicts),
+            "extractable_exact_verdict": structured_verdicts,
+            "text_fallback_calls": text_fallback_calls,
+            "rejected_without_exact_verdict": rejected_without_exact_verdict,
+        },
+        "latency_protocol": "Critical path reconstructed from recorded call times and local overhead assumptions. Parallel calls use their maximum latency.",
+        "unique_calls_used": len(runner.used_keys),
+        "router_task_results": {"eco": s5_eco_rows, "strict": s5_strict_rows},
         "num_tasks": len(suite),
         "num_configurations": len(summaries),
         "total_cached_unique_api_calls": len(runner._cache),

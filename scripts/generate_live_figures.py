@@ -16,7 +16,6 @@ from typing import Any, Dict, List
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib.colors import TwoSlopeNorm
 import numpy as np
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -155,7 +154,7 @@ def plot_live_pareto_frontier(data: Dict[str, Any], out_path: Path) -> None:
 
     ax1.set_xlim(120, 7680)
     ax1.set_ylim(45.0, 108.2)
-    ax1.set_xlabel("Mean Live API Token Consumption per Task (Input + Reasoning + Output)")
+    ax1.set_xlabel("Mean Reported Input + Output Tokens per Task")
     ax1.set_ylabel("Exact Deterministic Oracle Accuracy (%)")
     ax1.set_title("(a) Live Multi-Family LLM Cost–Accuracy Pareto Frontier (N = 45)")
     ax1.legend(loc="lower right", fontsize=8.8)
@@ -214,40 +213,7 @@ def plot_live_verification_harm_audit(data: Dict[str, Any], out_path: Path) -> N
     audits: List[Dict[str, Any]] = data["markov_live_audits"]
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15.4, 6.0), gridspec_kw={"width_ratios": [1.06, 1.18]})
 
-    # --- Panel (a): Empirical (alpha_hat, beta_hat) Overlaid on Markov Phase Diagram ---
-    alphas = np.linspace(0.0, 0.99, 140)
-    betas = np.linspace(0.0, 0.99, 140)
-    p0_ref, q_ic_ref, q_ci_ref = 0.80, 0.60, 0.16
-    A, B, delta_p = compute_phase_diagram_grid(
-        p0=p0_ref, q_i2c=q_ic_ref, q_c2i=q_ci_ref, alpha_grid=alphas, beta_grid=betas
-    )
-    Z = delta_p * 100.0
-    norm = TwoSlopeNorm(vmin=min(-8.0, float(np.min(Z))), vcenter=0.0, vmax=max(8.0, float(np.max(Z))))
-    pcm = ax1.pcolormesh(A, B, Z, cmap="RdYlGn", norm=norm, shading="auto", alpha=0.84)
-    cbar = fig.colorbar(pcm, ax=ax1, pad=0.025)
-    cbar.outline.set_linewidth(1.2)
-    cbar.outline.set_edgecolor("#111111")
-    cbar.ax.tick_params(direction="in", width=1.1, length=3.8)
-    for tl in cbar.ax.get_yticklabels():
-        tl.set_fontfamily("Times New Roman")
-        tl.set_fontweight("bold")
-    cbar.set_label(
-        r"Theoretical Net Gain $\mathbf{\Delta} p_1$ (pp, $p_0=0.80$ ref.)",
-        fontsize=9.8,
-        fontfamily="Times New Roman",
-        fontweight="bold",
-    )
-
-    bound_alpha = np.clip(((1.0 - p0_ref) * q_ic_ref / (p0_ref * q_ci_ref)) * (1.0 - betas), 0.0, 1.0)
-    ax1.plot(
-        bound_alpha,
-        betas,
-        color="#111111",
-        lw=2.3,
-        ls="--",
-        label=r"Critical Harm Boundary ($\mathbf{\Delta} p_1 = 0$)",
-    )
-
+    # Rates and endpoint deltas come from the same set of tasks for each configuration.
     box_positions = {
         "S3_DeepSeek_ToolGLMVer": (0.07, 0.09),
         "S3_MiniMax_ToolGLMVer": (0.07, 0.56),
@@ -288,8 +254,7 @@ def plot_live_verification_harm_audit(data: Dict[str, Any], out_path: Path) -> N
     ax1.set_ylim(-0.03, 0.98)
     ax1.set_xlabel(r"Empirical Type-I False-Rejection Rate $\hat{\alpha} = P(\mathrm{reject} \mid \mathrm{Correct})$")
     ax1.set_ylabel(r"Empirical Type-II False-Acceptance Rate $\hat{\beta} = P(\mathrm{accept} \mid \mathrm{Incorrect})$")
-    ax1.set_title("(a) Live LLM Verifiers in Theoretical Markov Phase Space")
-    ax1.legend(loc="upper right", fontsize=8.8)
+    ax1.set_title("(a) Observed Rejection and Acceptance Errors by Configuration")
     _polish_journal_ax(ax1)
 
     # --- Panel (b): Before vs After Verification Accuracy + Exact Markov Formula Alignment ---
@@ -335,7 +300,7 @@ def plot_live_verification_harm_audit(data: Dict[str, Any], out_path: Path) -> N
         marker="D",
         s=58,
         zorder=7,
-        label=r"Closed-Form Theorem 1 Prediction $p_1^{\mathrm{theory}}$",
+        label=r"Reconstructed from observed transition counts",
     )
 
     for i, a in enumerate(audits):
@@ -355,9 +320,10 @@ def plot_live_verification_harm_audit(data: Dict[str, Any], out_path: Path) -> N
     ax2.set_yticks(y_pos + h / 2)
     ax2.set_yticklabels(labels, fontsize=9.2)
     ax2.set_xlim(0, 146)
+    ax2.set_xticks([0, 20, 40, 60, 80, 100])
     ax2.set_ylim(-0.45, len(audits) + 0.42)
     ax2.set_xlabel("Exact Deterministic Oracle Accuracy (%)")
-    ax2.set_title("(b) Empirical Verification Harm vs. Tool-Grounded Gain (N = 45)")
+    ax2.set_title("(b) Accuracy Before and After Review (N = 45)")
     ax2.legend(loc="upper right", fontsize=8.4, ncol=1)
     _polish_journal_ax(ax2)
 

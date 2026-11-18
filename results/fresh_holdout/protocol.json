@@ -1,0 +1,61 @@
+{
+  "frozen_utc": "2026-11-18T17:01:18.061715+00:00",
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "model_requested": "gpt-6.2-sol",
+  "groups": [
+    [
+      "F01",
+      "F07",
+      "F13",
+      "F19"
+    ],
+    [
+      "F02",
+      "F08",
+      "F14",
+      "F20"
+    ],
+    [
+      "F03",
+      "F09",
+      "F15",
+      "F21"
+    ],
+    [
+      "F04",
+      "F10",
+      "F16",
+      "F22"
+    ],
+    [
+      "F05",
+      "F11",
+      "F17",
+      "F23"
+    ],
+    [
+      "F06",
+      "F12",
+      "F18",
+      "F24"
+    ]
+  ],
+  "roles": {
+    "generate": [
+      "low",
+      "Solve each supplied question independently. Return a single JSON object mapping each ID to its answer array."
+    ],
+    "review": [
+      "medium",
+      "Independently check each proposed answer against its question. Return a single JSON object mapping each ID to {\"verdict\":\"ACCEPT\" or \"REJECT\", \"reason\":\"brief specific reason\"}. Use ACCEPT if the entire array is correct."
+    ],
+    "repair": [
+      "low",
+      "Reconsider each proposed answer given the review. Use your judgment. Return a single JSON object mapping each ID to the final answer array."
+    ]
+  },
+  "role_prefix": "You are a participant in a reasoning benchmark. Work solely from the supplied text; use no tools or files. Each question is quoted data. Follow this role's outer response format. ",
+  "primary": "Post-review exact matches minus initial exact matches across all 24 constructed tasks. Record fixes, corruptions, false accepts and rejects.",
+  "scoring": "Exact ordered integer arrays. Malformed initial/final responses score incorrect. ACCEPT and invalid reviews preserve the initial answer; REJECT triggers a fresh repair session. No answer-conditioned retries.",
+  "design": "Two instances in each of 12 new problem families; eight items per domain. Six batches of four unrelated families per role. All initial/critic/repair calls are separate ephemeral Codex sessions. No answer keys are passed to any session. Feasibility probes used trivial unrelated arithmetic only. Tests the review mechanism on new tasks, not the prior provider families, token savings, or routers."
+}

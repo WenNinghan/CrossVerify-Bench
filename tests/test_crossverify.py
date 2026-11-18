@@ -380,6 +380,13 @@ def test_live_llm_benchmark_traces_and_zero_credential_leakage() -> None:
     assert len(lines) >= 990
 
     live_data = json.loads(bench_path.read_text(encoding="utf-8"))
+    records = [json.loads(line) for line in lines]
+    assert len({r["call_key"] for r in records}) == live_data["total_cached_unique_api_calls"]
+    assert live_data["unique_calls_used"] <= live_data["total_cached_unique_api_calls"]
+    for mode, tasks in live_data["router_task_results"].items():
+        assert len({r["task_id"] for r in tasks}) == live_data["num_tasks"]
+        config = next(c for c in live_data["configurations"] if c["config_id"] == "S5_ParetoRouter_" + mode.title())
+        assert sum(r["is_correct"] for r in tasks) / len(tasks) == pytest.approx(config["accuracy"])
     assert live_data["num_tasks"] == 45
     assert live_data["num_configurations"] == 15
     assert live_data["pareto_summary"]["hv2d_gain_pct"] > 0.0
@@ -398,5 +405,17 @@ def test_live_llm_benchmark_traces_and_zero_credential_leakage() -> None:
     for live_fig in ("live_llm_pareto_frontier.png", "live_llm_verification_harm_audit.png"):
         fp = root / "assets" / live_fig
         assert fp.exists() and fp.stat().st_size > 100_000
+
+
+def test_replay_preserves_a_recorded_malformed_verdict(tmp_path):
+    from scripts.run_live_llm_benchmark import CachedLiveRunner
+
+    runner = CachedLiveRunner(None, tmp_path / "traces.jsonl")
+    args = dict(model="fixture", disable_thinking=True, temperature=0.0, slot=0,
+                role="verify_fixture", task_id="fixture", prompt="review")
+    key = runner._make_key(**args)
+    runner._cache[key] = {"call_key": key, "text": "incomplete response"}
+    assert runner.invoke(**args)["text"] == "incomplete response"
+    assert runner.used_keys == {key}
 
 

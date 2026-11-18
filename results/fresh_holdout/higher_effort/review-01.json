@@ -1,0 +1,24 @@
+{
+  "role": "review",
+  "batch": 1,
+  "model_requested": "gpt-6.2-sol",
+  "reasoning_effort": "medium",
+  "ids": [
+    "F01",
+    "F07",
+    "F13",
+    "F19"
+  ],
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "prompt_hash": "780cf7c6be34d930df29055921e9acfe97eb815ea9cd2f629b2be113a5b44620",
+  "collected_utc": "2026-11-18T17:05:20.161046+00:00",
+  "usage": {
+    "input_tokens": 15750,
+    "cached_input_tokens": 13952,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 582,
+    "reasoning_output_tokens": 374
+  },
+  "response": "{\n  \"F01\": {\"verdict\":\"ACCEPT\",\"reason\":\"There are 11 misses, and the final request evicts page 3, leaving pages 2, 4, and 6.\"},\n  \"F07\": {\"verdict\":\"ACCEPT\",\"reason\":\"Hospitals 1, 2, and 3 retain residents 3, 1, and 4 respectively. Resident 2 exhausts all choices.\"},\n  \"F13\": {\"verdict\":\"ACCEPT\",\"reason\":\"The two optimal paths share the prefix [1,1,1,1,0,0]. Their final transition-emission products tie, so the path ending in 0 wins lexicographically.\"},\n  \"F19\": {\"verdict\":\"ACCEPT\",\"reason\":\"The first query has no eligible row. The remaining queries select rows 2, 3, 5, and 4, yielding 19, 9, 21, and 26.\"}\n}",
+  "tool_events": 0
+}

@@ -1,0 +1,24 @@
+{
+  "role": "review",
+  "batch": 5,
+  "model_requested": "gpt-6.2-sol",
+  "reasoning_effort": "medium",
+  "ids": [
+    "F05",
+    "F11",
+    "F17",
+    "F23"
+  ],
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "prompt_hash": "fda651d9c0affbd416bf05cf2a4f88866a9b2bc62062534521c19562a88ed155",
+  "collected_utc": "2026-11-18T17:02:54.400349+00:00",
+  "usage": {
+    "input_tokens": 15571,
+    "cached_input_tokens": 10368,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 741,
+    "reasoning_output_tokens": 501
+  },
+  "response": "{\n  \"F05\": {\"verdict\": \"ACCEPT\", \"reason\": \"Interval dynamic programming gives a minimum cost of 70, achieved by exactly one parenthesization.\"},\n  \"F11\": {\"verdict\": \"ACCEPT\", \"reason\": \"First arrivals at 5 on steps 3, 5, and 7 contribute 162, 162, and 130 over 2187, giving 454/2187 in lowest terms.\"},\n  \"F17\": {\"verdict\": \"ACCEPT\", \"reason\": \"All four candidates start with 4 votes, so the tie-break eliminates 4. The remaining tallies are 4, 6, and 6 for candidates 1, 2, and 3. Eliminating 1 transfers its votes to 2, leaving 3 next to go.\"},\n  \"F23\": {\"verdict\": \"ACCEPT\", \"reason\": \"Columns [4, 3, 2, 1] score 7 + 6 + 5 + 8 = 26, and every other assignment scores at most 25.\"}\n}",
+  "tool_events": 0
+}

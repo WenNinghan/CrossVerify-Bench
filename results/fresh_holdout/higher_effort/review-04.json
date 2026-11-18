@@ -1,0 +1,24 @@
+{
+  "role": "review",
+  "batch": 4,
+  "model_requested": "gpt-6.2-sol",
+  "reasoning_effort": "medium",
+  "ids": [
+    "F04",
+    "F10",
+    "F16",
+    "F22"
+  ],
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "prompt_hash": "97ea98c54ce7550b6833bf507505b225af3f04d85d13d6a27ca9263795013721",
+  "collected_utc": "2026-11-18T17:05:26.865136+00:00",
+  "usage": {
+    "input_tokens": 15598,
+    "cached_input_tokens": 0,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 449,
+    "reasoning_output_tokens": 264
+  },
+  "response": "{\n  \"F04\": {\"verdict\":\"ACCEPT\",\"reason\":\"Player 12 is removed third, player 11 is removed seventh, and player 3 remains.\"},\n  \"F10\": {\"verdict\":\"ACCEPT\",\"reason\":\"The fitted sequence is [3, 3, 4, 4, 4, 4, 7], with three distinct levels and an unweighted sum of 29.\"},\n  \"F16\": {\"verdict\":\"ACCEPT\",\"reason\":\"The positive-report probabilities are 39/50 for A and 169/220 for B. Equal priors give a posterior of 66/131 for A.\"},\n  \"F22\": {\"verdict\":\"ACCEPT\",\"reason\":\"The three successful reversals cancel payments 2, 3, and 6, leaving zero active payments and zero active amount.\"}\n}",
+  "tool_events": 0
+}

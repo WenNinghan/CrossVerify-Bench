@@ -1,0 +1,689 @@
+{
+  "bank_sha256": "a7598623646ff8012801ee4db2d3e65f675be802ba7686ac4d7344afb28b2e3c",
+  "counts": {
+    "n": 24,
+    "initial_correct": 24,
+    "final_correct": 24,
+    "false_rejects": 0,
+    "false_accepts": 0,
+    "invalid_verdicts": 0,
+    "fixed": 0,
+    "broken": 0
+  },
+  "descriptive_paired_sign_p": 1.0,
+  "by_domain": {
+    "algorithm": {
+      "n": 8,
+      "initial_correct": 8,
+      "final_correct": 8,
+      "false_rejects": 0,
+      "false_accepts": 0,
+      "invalid_verdicts": 0,
+      "fixed": 0,
+      "broken": 0
+    },
+    "quantitative": {
+      "n": 8,
+      "initial_correct": 8,
+      "final_correct": 8,
+      "false_rejects": 0,
+      "false_accepts": 0,
+      "invalid_verdicts": 0,
+      "fixed": 0,
+      "broken": 0
+    },
+    "records": {
+      "n": 8,
+      "initial_correct": 8,
+      "final_correct": 8,
+      "false_rejects": 0,
+      "false_accepts": 0,
+      "invalid_verdicts": 0,
+      "fixed": 0,
+      "broken": 0
+    }
+  },
+  "usage": {
+    "generate": {
+      "completed_sessions": 6,
+      "reported_tokens": {
+        "input_tokens": 93383,
+        "cached_input_tokens": 51840,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 4769,
+        "reasoning_output_tokens": 4321
+      }
+    },
+    "review": {
+      "completed_sessions": 6,
+      "reported_tokens": {
+        "input_tokens": 93881,
+        "cached_input_tokens": 59008,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 3853,
+        "reasoning_output_tokens": 2586
+      }
+    },
+    "repair": {
+      "completed_sessions": 0,
+      "reported_tokens": {}
+    }
+  },
+  "paired": [
+    {
+      "id": "F01",
+      "domain": "algorithm",
+      "family": "lfu",
+      "answer": [
+        11,
+        2,
+        4,
+        6
+      ],
+      "initial": [
+        11,
+        2,
+        4,
+        6
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        11,
+        2,
+        4,
+        6
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F02",
+      "domain": "algorithm",
+      "family": "lfu",
+      "answer": [
+        14,
+        2,
+        4,
+        6,
+        7
+      ],
+      "initial": [
+        14,
+        2,
+        4,
+        6,
+        7
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        14,
+        2,
+        4,
+        6,
+        7
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F03",
+      "domain": "algorithm",
+      "family": "variable_josephus",
+      "answer": [
+        3,
+        1,
+        5
+      ],
+      "initial": [
+        3,
+        1,
+        5
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        3,
+        1,
+        5
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F04",
+      "domain": "algorithm",
+      "family": "variable_josephus",
+      "answer": [
+        12,
+        11,
+        3
+      ],
+      "initial": [
+        12,
+        11,
+        3
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        12,
+        11,
+        3
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F05",
+      "domain": "algorithm",
+      "family": "alphabetic_merge",
+      "answer": [
+        70,
+        1
+      ],
+      "initial": [
+        70,
+        1
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        70,
+        1
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F06",
+      "domain": "algorithm",
+      "family": "alphabetic_merge",
+      "answer": [
+        78,
+        1
+      ],
+      "initial": [
+        78,
+        1
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        78,
+        1
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F07",
+      "domain": "algorithm",
+      "family": "deferred_acceptance",
+      "answer": [
+        2,
+        0,
+        1,
+        3
+      ],
+      "initial": [
+        2,
+        0,
+        1,
+        3
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        2,
+        0,
+        1,
+        3
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F08",
+      "domain": "algorithm",
+      "family": "deferred_acceptance",
+      "answer": [
+        0,
+        1,
+        3,
+        2
+      ],
+      "initial": [
+        0,
+        1,
+        3,
+        2
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        0,
+        1,
+        3,
+        2
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F09",
+      "domain": "quantitative",
+      "family": "isotonic_fit",
+      "answer": [
+        2,
+        89,
+        3
+      ],
+      "initial": [
+        2,
+        89,
+        3
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        2,
+        89,
+        3
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F10",
+      "domain": "quantitative",
+      "family": "isotonic_fit",
+      "answer": [
+        3,
+        29,
+        1
+      ],
+      "initial": [
+        3,
+        29,
+        1
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        3,
+        29,
+        1
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F11",
+      "domain": "quantitative",
+      "family": "alternating_walk",
+      "answer": [
+        454,
+        2187
+      ],
+      "initial": [
+        454,
+        2187
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        454,
+        2187
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F12",
+      "domain": "quantitative",
+      "family": "alternating_walk",
+      "answer": [
+        154,
+        729
+      ],
+      "initial": [
+        154,
+        729
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        154,
+        729
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F13",
+      "domain": "quantitative",
+      "family": "viterbi",
+      "answer": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "initial": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F14",
+      "domain": "quantitative",
+      "family": "viterbi",
+      "answer": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F15",
+      "domain": "quantitative",
+      "family": "pooled_bayes",
+      "answer": [
+        41,
+        77
+      ],
+      "initial": [
+        41,
+        77
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        41,
+        77
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F16",
+      "domain": "quantitative",
+      "family": "pooled_bayes",
+      "answer": [
+        66,
+        131
+      ],
+      "initial": [
+        66,
+        131
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        66,
+        131
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F17",
+      "domain": "records",
+      "family": "transfer_ballots",
+      "answer": [
+        4,
+        1,
+        3,
+        2
+      ],
+      "initial": [
+        4,
+        1,
+        3,
+        2
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        4,
+        1,
+        3,
+        2
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F18",
+      "domain": "records",
+      "family": "transfer_ballots",
+      "answer": [
+        3,
+        4,
+        1,
+        2
+      ],
+      "initial": [
+        3,
+        4,
+        1,
+        2
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        3,
+        4,
+        1,
+        2
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F19",
+      "domain": "records",
+      "family": "bitemporal_asof",
+      "answer": [
+        -1,
+        19,
+        9,
+        21,
+        26
+      ],
+      "initial": [
+        -1,
+        19,
+        9,
+        21,
+        26
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        -1,
+        19,
+        9,
+        21,
+        26
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F20",
+      "domain": "records",
+      "family": "bitemporal_asof",
+      "answer": [
+        -1,
+        17,
+        16,
+        17,
+        25
+      ],
+      "initial": [
+        -1,
+        17,
+        16,
+        17,
+        25
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        -1,
+        17,
+        16,
+        17,
+        25
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F21",
+      "domain": "records",
+      "family": "idempotent_ledger",
+      "answer": [
+        8,
+        1,
+        2
+      ],
+      "initial": [
+        8,
+        1,
+        2
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        8,
+        1,
+        2
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F22",
+      "domain": "records",
+      "family": "idempotent_ledger",
+      "answer": [
+        0,
+        0,
+        3
+      ],
+      "initial": [
+        0,
+        0,
+        3
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        0,
+        0,
+        3
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F23",
+      "domain": "records",
+      "family": "record_link",
+      "answer": [
+        26,
+        1,
+        4,
+        3,
+        2,
+        1
+      ],
+      "initial": [
+        26,
+        1,
+        4,
+        3,
+        2,
+        1
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        26,
+        1,
+        4,
+        3,
+        2,
+        1
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    },
+    {
+      "id": "F24",
+      "domain": "records",
+      "family": "record_link",
+      "answer": [
+        36,
+        2,
+        1,
+        5,
+        2,
+        3,
+        4
+      ],
+      "initial": [
+        36,
+        2,
+        1,
+        5,
+        2,
+        3,
+        4
+      ],
+      "verdict": "ACCEPT",
+      "final": [
+        36,
+        2,
+        1,
+        5,
+        2,
+        3,
+        4
+      ],
+      "initial_correct": true,
+      "final_correct": true
+    }
+  ]
+}
