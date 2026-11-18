@@ -1,4 +1,4 @@
-# CrossVerify-Bench: Cost–Error Accounting & Multi-Family LLM Benchmark for Harness Guardrails, Differential Testing, and NVP Routing
+# CrossVerify-Bench
 
 [![Python 3.9+](https://img.shields.io/badge/Python-3.9%2B-3776AB.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -6,9 +6,11 @@
 [![Live LLM Traces](https://img.shields.io/badge/Recorded%20API%20Responses-JSONL-D97706.svg)](results/live_llm_traces.jsonl)
 [![Model Families](https://img.shields.io/badge/Live%20Families-Qwen%20%C2%B7%20DeepSeek%20%C2%B7%20GLM%20%C2%B7%20MiMo%20%C2%B7%20MiniMax-0F8B6D.svg)](scripts/run_live_llm_benchmark.py)
 
-The live benchmark asks when a second model fixes a wrong answer, when it changes a correct one, and how much each policy costs. It compares five model families on 45 constructed tasks from three domains. A separate 180-task simulation explores the assumptions in the cost–error model.
+When does a reviewer fix an answer, and when does it spoil one? In archived runs on 45 questions, the same Qwen reviewer increased DeepSeek's correct count from **22 to 37** and reduced MiniMax's from **36 to 34**. A separate evaluation on **24 new questions** used one model at two levels of reasoning effort. It recorded **one fix and no regressions** across the two runs. The repository retains the individual answers, verdicts and revisions. [Archived comparisons](#results-from-the-archived-calls) · [New question bank](data/fresh_holdout.json)
 
-## Independent 24-question replication
+<a name="independent-24-question-replication"></a>
+
+## Single-model review on 24 new questions
 
 We froze 24 new questions, their executable reference answers and a scoring rule before collecting the primary responses. The new bank covers 12 problem families with two instances each, including cache eviction, constrained merging, posterior probability and bitemporal records. Each domain has eight items. Both conditions use the same questions and prompt wording. [Question bank](data/fresh_holdout.json) · [Reference calculators](scripts/build_fresh_holdout.py) · [Primary protocol](results/fresh_holdout/protocol.json)
 
