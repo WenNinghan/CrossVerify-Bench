@@ -269,10 +269,10 @@ def plot_pareto_frontier(data: Dict[str, Any], assets_dir: Path) -> Path:
         "S4_Debate_Homog_Mid": (150, -1.6, "Debate-Homog"),
         "S4_Debate_Hetero_MidFrontier": (150, -1.4, "Debate-Hetero"),
         "S4_Debate_Hetero_ToolJudge": (-1650, +1.3, "Debate-Hetero+Tool"),
-        "S5_Router_Lite": (-1020, +0.9, "Router-Lite"),
-        "S5_Router_Eco": (-1380, +1.1, "Router-Eco (Knee)"),
-        "S5_Router_Balanced": (-150, +1.9, "Router-Balanced"),
-        "S5_Router_Strict": (-1240, +1.0, "Router-Strict"),
+        "S5_Router_Lite": (-1060, +0.9, "Router-Lite"),
+        "S5_Router_Eco": (-1460, +0.8, "Router-Eco (Knee)"),
+        "S5_Router_Balanced": (-1380, +2.4, "Router-Balanced"),
+        "S5_Router_Strict": (-1280, +1.2, "Router-Strict"),
     }
     for cid, (dx, dy, txt) in label_offsets.items():
         if cid in configs:
@@ -631,26 +631,26 @@ def plot_difficulty_stratified_breakdown(data: Dict[str, Any], assets_dir: Path)
     tok_vals = [configs[cid]["mean_tokens"] for cid, _, _ in selected_ids]
 
     ax_diff.bar(
-        x - width, easy_vals, width, label="Easy (60 tasks)", color="#38BDF8", edgecolor="#0F172A", lw=0.7, zorder=3
+        x - width, easy_vals, width, label="Easy (60 tasks)", color="#4F81BD", edgecolor="#111111", lw=0.95, zorder=3
     )
     ax_diff.bar(
-        x, med_vals, width, label="Medium (60 tasks)", color="#6366F1", edgecolor="#0F172A", lw=0.7, zorder=3
+        x, med_vals, width, label="Medium (60 tasks)", color="#8064A2", edgecolor="#111111", lw=0.95, hatch="//", zorder=3
     )
     b3 = ax_diff.bar(
-        x + width, hard_vals, width, label="Hard (60 tasks)", color="#EC4899", edgecolor="#0F172A", lw=0.7, zorder=3
+        x + width, hard_vals, width, label="Hard (60 tasks)", color="#0B6E4F", edgecolor="#111111", lw=0.95, zorder=3
     )
 
     for bar in b3:
         h = bar.get_height()
         ax_diff.text(
-            bar.get_x() + bar.get_width() / 2.0,
-            h + 1.0,
+            bar.get_x() + bar.get_width() * 0.62,
+            h + 1.1,
             f"{h:.0f}%",
             ha="center",
             va="bottom",
             fontsize=7.6,
             fontweight="bold",
-            color="#831843",
+            color="#064E3B",
         )
 
     for idx_g, tok in enumerate(tok_vals):
@@ -764,9 +764,9 @@ def plot_routing_and_latency(data: Dict[str, Any], assets_dir: Path) -> Path:
         x_g,
         t1_pct,
         width=0.56,
-        color="#34D399",
-        edgecolor="#0F172A",
-        lw=0.8,
+        color="#0B6E4F",
+        edgecolor="#111111",
+        lw=0.95,
         label="Tier 1: Fast-8B + 0-tok MicroCheck",
         zorder=3,
     )
@@ -775,9 +775,10 @@ def plot_routing_and_latency(data: Dict[str, Any], assets_dir: Path) -> Path:
         t2_pct,
         bottom=t1_pct,
         width=0.56,
-        color="#60A5FA",
-        edgecolor="#0F172A",
-        lw=0.8,
+        color="#4F81BD",
+        edgecolor="#111111",
+        lw=0.95,
+        hatch="//",
         label="Tier 2: Mid/Frontier + Tool Repair",
         zorder=3,
     )
@@ -786,18 +787,18 @@ def plot_routing_and_latency(data: Dict[str, Any], assets_dir: Path) -> Path:
         t3_pct,
         bottom=t1_pct + t2_pct,
         width=0.56,
-        color="#F472B6",
-        edgecolor="#0F172A",
-        lw=0.8,
+        color="#D68910",
+        edgecolor="#111111",
+        lw=0.95,
         label="Tier 3: Hetero Dual-Proposer + Gate",
         zorder=3,
     )
 
     for idx_b in range(len(bar_groups)):
-        for bot, val, col_t in [
-            (0.0, t1_pct[idx_b], "#064E3B"),
-            (t1_pct[idx_b], t2_pct[idx_b], "#1E3A8A"),
-            (t1_pct[idx_b] + t2_pct[idx_b], t3_pct[idx_b], "#831843"),
+        for bot, val, col_t, bg_box in [
+            (0.0, t1_pct[idx_b], "white", None),
+            (t1_pct[idx_b], t2_pct[idx_b], "#111111", "white"),
+            (t1_pct[idx_b] + t2_pct[idx_b], t3_pct[idx_b], "#111111", None),
         ]:
             if val >= 8.0:
                 ax_alloc.text(
@@ -809,6 +810,7 @@ def plot_routing_and_latency(data: Dict[str, Any], assets_dir: Path) -> Path:
                     fontsize=8.3,
                     fontweight="bold",
                     color=col_t,
+                    bbox=(dict(boxstyle="square,pad=0.12", fc=bg_box, ec="none", alpha=0.82) if bg_box else None),
                     zorder=5,
                 )
 
