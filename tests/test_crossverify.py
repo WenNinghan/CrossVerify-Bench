@@ -329,3 +329,74 @@ def test_benchmark_artifacts_and_markov_half_percent_guarantee() -> None:
         fig_path = root / "assets" / fig_name
         assert fig_path.exists() and fig_path.stat().st_size > 100_000
 
+
+# ---------------------------------------------------------------------------
+# 5. Live Multi-Family LLM Suite & Empirical Trace Verification Tests
+# ---------------------------------------------------------------------------
+
+
+def test_live_evaluation_suite_structure_and_extractors() -> None:
+    from crossverify.live_suite import (
+        build_live_evaluation_suite,
+        extract_clean_code,
+        extract_clean_json,
+    )
+
+    live_suite = build_live_evaluation_suite()
+    assert len(live_suite) == 45
+    assert sum(1 for t in live_suite if t.difficulty == "easy") == 15
+    assert sum(1 for t in live_suite if t.difficulty == "medium") == 15
+    assert sum(1 for t in live_suite if t.difficulty == "hard") == 15
+    for dom in ("code_patch", "scientific_symbolic", "evidence_crosscheck"):
+        assert sum(1 for t in live_suite if t.domain == dom) == 15
+
+    fenced_code = "Here is the solution:\n```python\ndef solve(lo, hi):\n    return 0\n```\n"
+    assert extract_clean_code(fenced_code) == "def solve(lo, hi):\n    return 0"
+
+    fenced_json = 'Analysis complete.\n```json\n{"verdict": "ACCEPT", "critique": "ok"}\n```'
+    assert extract_clean_json(fenced_json)["verdict"] == "ACCEPT"
+
+    # Programmatic parity + anti-spoofing audit consistency on live_evid_hard_02 (R3=3420 has odd digit sum 9)
+    t_eh2 = [t for t in live_suite if t.task_id == "live_evid_hard_02"][0]
+    assert t_eh2.evaluate('{"corrupted_ids": ["R2", "R3", "R4", "R6"], "reconciled_kW": 3670, "schedule": [0, 2, 1, 3, 4]}')
+
+
+def test_live_llm_benchmark_traces_and_zero_credential_leakage() -> None:
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parent.parent
+    trace_path = root / "results" / "live_llm_traces.jsonl"
+    bench_path = root / "results" / "live_llm_benchmark.json"
+    csv_path = root / "results" / "live_llm_comparison.csv"
+
+    assert trace_path.exists()
+    assert bench_path.exists()
+    assert csv_path.exists()
+
+    raw_traces = trace_path.read_text(encoding="utf-8")
+    assert "sk-" not in raw_traces
+    lines = [ln for ln in raw_traces.splitlines() if ln.strip()]
+    assert len(lines) >= 990
+
+    live_data = json.loads(bench_path.read_text(encoding="utf-8"))
+    assert live_data["num_tasks"] == 45
+    assert live_data["num_configurations"] == 15
+    assert live_data["pareto_summary"]["hv2d_gain_pct"] > 0.0
+
+    # Verify exact Markov Theorem 1 identity on all 5 real S3 empirical audits
+    harm_found = False
+    gain_found = False
+    for aud in live_data["markov_live_audits"]:
+        assert aud["p1_empirical"] == pytest.approx(aud["p1_markov_formula"], abs=1e-9)
+        if aud["net_gain_pp"] < 0.0:
+            harm_found = True
+        if aud["net_gain_pp"] > 20.0:
+            gain_found = True
+    assert harm_found and gain_found
+
+    for live_fig in ("live_llm_pareto_frontier.png", "live_llm_verification_harm_audit.png"):
+        fp = root / "assets" / live_fig
+        assert fp.exists() and fp.stat().st_size > 100_000
+
+

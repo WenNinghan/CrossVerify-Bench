@@ -25,6 +25,11 @@ from crossverify.tasks import (
     extract_prompt_features,
     summarize_benchmark_suite,
 )
+from crossverify.live_suite import (
+    build_live_evaluation_suite,
+    extract_clean_code,
+    extract_clean_json,
+)
 from crossverify.topologies import (
     MODEL_REGISTRY,
     VERIFIER_REGISTRY,
@@ -33,6 +38,7 @@ from crossverify.topologies import (
     CalibratedReplayBackend,
     ExecutionTrace,
     GeneratorVerifierLoop,
+    LiveAnthropicMessagesBackend,
     LiveOpenAIBackend,
     ModelSpec,
     ParetoAdaptiveRouter,
@@ -42,7 +48,7 @@ from crossverify.topologies import (
     build_benchmark_configurations,
 )
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 
 __all__ = [
     "MarkovVerifierChain",
@@ -71,6 +77,10 @@ __all__ = [
     "ExecutionTrace",
     "CalibratedReplayBackend",
     "LiveOpenAIBackend",
+    "LiveAnthropicMessagesBackend",
+    "build_live_evaluation_suite",
+    "extract_clean_code",
+    "extract_clean_json",
     "BaseTopology",
     "SinglePass",
     "SelfConsistencyVote",

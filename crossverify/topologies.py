@@ -496,6 +496,92 @@ class LiveOpenAIBackend:
         return txt, 0.80, tok, lat
 
 
+class LiveAnthropicMessagesBackend:
+    """Anthropic `/v1/messages` protocol client supporting multi-family gateways & thinking toggles."""
+
+    def __init__(
+        self,
+        api_key: str,
+        base_url: str = "https://api.anthropic.com",
+        timeout: float = 75.0,
+        max_retries: int = 3,
+    ) -> None:
+        self.api_key = api_key
+        self.base_url = base_url.rstrip("/")
+        if self.base_url.endswith("/v1"):
+            self.endpoint = f"{self.base_url}/messages"
+        else:
+            self.endpoint = f"{self.base_url}/v1/messages"
+        self.timeout = timeout
+        self.max_retries = max_retries
+
+    def call_messages(
+        self,
+        model: str,
+        user_prompt: str,
+        system_prompt: Optional[str] = None,
+        temperature: float = 0.0,
+        max_tokens: int = 6144,
+        disable_thinking: bool = False,
+    ) -> Dict[str, Any]:
+        payload: Dict[str, Any] = {
+            "model": model,
+            "max_tokens": max_tokens,
+            "temperature": temperature,
+            "messages": [{"role": "user", "content": user_prompt}],
+        }
+        if system_prompt:
+            payload["system"] = system_prompt
+        if disable_thinking:
+            payload["thinking"] = {"type": "disabled"}
+
+        body_bytes = json.dumps(payload).encode("utf-8")
+        last_err: Optional[Exception] = None
+        for attempt in range(self.max_retries):
+            req = urllib.request.Request(
+                self.endpoint,
+                data=body_bytes,
+                method="POST",
+                headers={
+                    "Content-Type": "application/json",
+                    "x-api-key": self.api_key,
+                    "Authorization": f"Bearer {self.api_key}",
+                    "anthropic-version": "2023-06-01",
+                    "User-Agent": "crossverify-bench/0.3",
+                },
+            )
+            t0 = time.perf_counter()
+            try:
+                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                    res = json.loads(resp.read().decode("utf-8"))
+                lat_ms = (time.perf_counter() - t0) * 1000.0
+                text = "".join(
+                    blk.get("text", "") for blk in res.get("content", []) if blk.get("type") == "text"
+                ).strip()
+                usage = res.get("usage", {})
+                in_tok = int(usage.get("input_tokens", 0))
+                out_tok = int(usage.get("output_tokens", 0))
+                oai_details = (
+                    usage.get("billing_usage", {})
+                    .get("openai_usage", {})
+                    .get("completion_tokens_details")
+                    or {}
+                )
+                reason_tok = int(oai_details.get("reasoning_tokens", 0) or 0)
+                return {
+                    "text": text,
+                    "input_tokens": in_tok,
+                    "output_tokens": out_tok,
+                    "reasoning_tokens": reason_tok,
+                    "total_tokens": max(1, in_tok + out_tok),
+                    "latency_ms": round(lat_ms, 2),
+                }
+            except Exception as exc:
+                last_err = exc
+                time.sleep(1.2 * (attempt + 1))
+        raise RuntimeError(f"Messages API failed after {self.max_retries} attempts on {model}: {last_err}")
+
+
 # ---------------------------------------------------------------------------
 # Five Multi-Agent Orchestration Topologies (S1 - S5)
 # ---------------------------------------------------------------------------

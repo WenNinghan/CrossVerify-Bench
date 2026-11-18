@@ -1,0 +1,641 @@
+{
+  "benchmark_name": "CrossVerify-Live-45 (100% Real Multi-Family LLM API Evaluation)",
+  "protocol": "Anthropic /v1/messages",
+  "num_tasks": 45,
+  "num_configurations": 15,
+  "total_cached_unique_api_calls": 1000,
+  "elapsed_seconds": 0.22,
+  "model_families_evaluated": [
+    "Qwen (qwen3.8-flash)",
+    "DeepSeek (deepseek-flash)",
+    "MiniMax (minimax-m3.1-flash, minimax-m3)",
+    "GLM (glm-5.3-flashx)",
+    "MiMo (mimo-v2.6-flash)"
+  ],
+  "pareto_summary": {
+    "hv2d_static": 0.8624369037570329,
+    "hv2d_global": 0.885182505197558,
+    "hv2d_gain_pct": 2.6373641180518295,
+    "hv3d_static": 0.7473765226464134,
+    "hv3d_global": 0.7593739091051673,
+    "hv3d_gain_pct": 1.6052667022870788,
+    "knee_point_config_id": "S1_MiniMax_M31",
+    "pareto_2d_frontier_ids": [
+      "S1_DeepSeekFlash_NoThink",
+      "S1_QwenFlash_NoThink",
+      "S1_MiniMax_M31",
+      "S1_MiMo_V26",
+      "S5_ParetoRouter_Eco",
+      "S1_GLM53_FlashX",
+      "S5_ParetoRouter_Strict"
+    ]
+  },
+  "markov_live_audits": [
+    {
+      "config_id": "S3_DeepSeek_WeakQwenCritic",
+      "p0_empirical": 0.4888888888888889,
+      "p1_empirical": 0.7777777777777778,
+      "p1_markov_formula": 0.7777777777777778,
+      "net_gain_pp": 28.888888888888893,
+      "alpha_false_rejection": 0.7272727272727273,
+      "beta_false_acceptance": 0.0,
+      "q_i2c_recovery": 0.6086956521739131,
+      "q_c2i_corruption": 0.0625,
+      "critical_alpha_star": 1.0,
+      "is_in_harm_regime": false,
+      "n_initial_correct": 22,
+      "n_false_rejections": 16,
+      "n_corrupted_by_critic": 1,
+      "n_recovered_by_critic": 14,
+      "harm_case_studies": [
+        {
+          "task_id": "live_code_hard_02",
+          "domain": "code_patch",
+          "difficulty": "hard",
+          "initial_correct_answer": "def solve(intervals):\n    n = len(intervals)\n    best = -1\n    for i in range(n):\n        for j in range(i + 1, n):\n            for k in range(j + 1, n):\n                L = max(intervals[i][0], intervals[j][0], intervals[k][0])\n                R = min(intervals[i][1], intervals[j][1], intervals[k][1])\n                if L <= R:\n                    best = ma",
+          "false_verifier_critique": "Let me carefully analyze the problem and the candidate solution.\n\n**Problem Requirements:**\n1. Given a list of closed integer intervals `(l, r)` with `l <= r`.\n2. Choose ANY subset of AT LEAST 3 intervals whose common intersection `[L, R]` is non-empty (`L <= R`).\n3. Maximize `R - L`.\n4. If fewer than 3 intervals exist or every 3-subset has empty intersectio",
+          "corrupted_repaired_answer": "```json\n{\"answer\": \"def solve(intervals):\\n    n = len(intervals)\\n    best = -1\\n    for i in range(n):\\n        for j in range(i + 1, n):\\n            for k in range(j + 1, n):\\n                L = max(intervals[i][0], intervals[j][0], intervals[k][0])\\n                R = min(intervals[i][1], intervals[j][1], intervals[k][1])\\n                if L <= R:\\n"
+        }
+      ],
+      "false_rejection_examples": [
+        {
+          "task_id": "live_code_easy_04",
+          "domain": "code_patch",
+          "difficulty": "easy",
+          "initial_correct_answer": "def solve(lo, hi):\n    if lo > hi:\n        return 0\n    count = 0\n    x = lo\n    while x <= hi:\n        if x % 6 == 4:\n            count += 1\n        x += 1\n    return min(count, 65)",
+          "false_verifier_critique": "The candidate uses a linear scan (O(N)) which is inefficient and potentially incorrect for large ranges due to performance constraints, but more importantly, the problem asks for a precise mathematical derivation. The correct approach is to calculate the count directly using arithmetic progression properties: find the first x >= lo such that x % 6 == 4, then",
+          "survived_repair": true
+        },
+        {
+          "task_id": "live_code_med_05",
+          "domain": "code_patch",
+          "difficulty": "medium",
+          "initial_correct_answer": "def solve(intervals):\n    valid = [tuple(p) for p in intervals if p[0] < p[1]]\n    valid.sort()\n    merged = []\n    for s, e in valid:\n        if merged and s <= merged[-1][1] + 4:\n            if e > merged[-1][1]:\n                merged[-1] = (merged[-1][0], e)\n        else:\n            merged.append((s, e))\n    return sum(min(r - l, 32) for l, r in merged)",
+          "false_verifier_critique": "{\n\"verdict\": \"REJECT\",\n\"critique\": \"The candidate fails to handle the case where a new interval is completely contained within the current merged interval but extends its end due to the gap bridge logic? No, wait. The issue is in the merging condition and update. If `s <= merged[-1][1] + 4`, it merges. However, if the new interval `(s, e)` has `e < merged[-1",
+          "survived_repair": true
+        },
+        {
+          "task_id": "live_code_hard_01",
+          "domain": "code_patch",
+          "difficulty": "hard",
+          "initial_correct_answer": "```python\ndef solve(intervals):\n    n = len(intervals)\n    if n < 2:\n        return -1\n    best = -1\n    for i in range(n):\n        for j in range(i + 1, n):\n            L = max(intervals[i][0], intervals[j][0])\n            R = min(intervals[i][1], intervals[j][1])\n            if L <= R:\n                best = max(best, R - L)\n    return best\n```",
+          "false_verifier_critique": "{\n  \"verdict\": \"REJECT\",\n  \"critique\": \"The candidate solution only checks pairs of intervals (subsets of size exactly 2). The problem asks to choose ANY subset of AT LEAST 2 intervals. A larger subset can have a non-empty intersection with a larger length than any pair, or conversely, the optimal subset might be of size > 2. For example, consider intervals ",
+          "survived_repair": true
+        },
+        {
+          "task_id": "live_code_hard_02",
+          "domain": "code_patch",
+          "difficulty": "hard",
+          "initial_correct_answer": "def solve(intervals):\n    n = len(intervals)\n    best = -1\n    for i in range(n):\n        for j in range(i + 1, n):\n            for k in range(j + 1, n):\n                L = max(intervals[i][0], intervals[j][0], intervals[k][0])\n                R = min(intervals[i][1], intervals[j][1], intervals[k][1])\n                if L <= R:\n                    best = ma",
+          "false_verifier_critique": "Let me carefully analyze the problem and the candidate solution.\n\n**Problem Requirements:**\n1. Given a list of closed integer intervals `(l, r)` with `l <= r`.\n2. Choose ANY subset of AT LEAST 3 intervals whose common intersection `[L, R]` is non-empty (`L <= R`).\n3. Maximize `R - L`.\n4. If fewer than 3 intervals exist or every 3-subset has empty intersectio",
+          "survived_repair": false
+        },
+        {
+          "task_id": "live_code_hard_03",
+          "domain": "code_patch",
+          "difficulty": "hard",
+          "initial_correct_answer": "def solve(nums):\n    n = len(nums)\n    if n == 0:\n        return 0\n    k = min(n, 3)\n    best = None\n    for start in range(n):\n        s = 0\n        for length in range(1, k + 1):\n            s += nums[(start + length - 1) % n]\n            if best is None or s > best:\n                best = s\n    return best",
+          "false_verifier_critique": "{\n\"verdict\": \"REJECT\",\n\"critique\": \"The candidate solution fails to handle the case where all elements are negative correctly in terms of the 'at most 3 distinct indices' constraint combined with the circular nature. Specifically, the inner loop accumulates sums for lengths 1, 2, and 3 starting from each index. If `nums` has length 1 or 2, `k` becomes 1 or 2",
+          "survived_repair": true
+        }
+      ]
+    },
+    {
+      "config_id": "S3_MiniMax_WeakQwenCritic",
+      "p0_empirical": 0.8,
+      "p1_empirical": 0.7777777777777778,
+      "p1_markov_formula": 0.7777777777777778,
+      "net_gain_pp": -2.2222222222222254,
+      "alpha_false_rejection": 0.9444444444444444,
+      "beta_false_acceptance": 0.1111111111111111,
+      "q_i2c_recovery": 0.5,
+      "q_c2i_corruption": 0.14705882352941177,
+      "critical_alpha_star": 0.7555555555555553,
+      "is_in_harm_regime": true,
+      "n_initial_correct": 36,
+      "n_false_rejections": 34,
+      "n_corrupted_by_critic": 5,
+      "n_recovered_by_critic": 4,
+      "harm_case_studies": [
+        {
+          "task_id": "live_sci_hard_04",
+          "domain": "scientific_symbolic",
+          "difficulty": "hard",
+          "initial_correct_answer": "{\"dispersion_abscissa\":-0.1029,\"frob_norm_sq\":135.5320,\"regime\":\"dispersion_stable\",\"u_star\":1.1500}",
+          "false_verifier_critique": "{\"verdict\": \"REJECT\", \"critique\": \"The dispersion_abscissa is incorrect. The correct value is approximately 0.1462 (positive), indicating a Turing unstable regime, not stable. Consequently, the 'regime' field should be 'turing_unstable'. The calculation of u_star and frob_norm_sq appears correct.\"",
+          "corrupted_repaired_answer": "{\"dispersion_abscissa\":0.1462,\"frob_norm_sq\":135.5320,\"regime\":\"turing_unstable\",\"u_star\":1.1500}"
+        },
+        {
+          "task_id": "live_evid_easy_01",
+          "domain": "evidence_crosscheck",
+          "difficulty": "easy",
+          "initial_correct_answer": "{\"metric_mw\":152,\"schedule\":[0,1,2]}",
+          "false_verifier_critique": "The schedule [0,1,2] violates the constraint slot(J0) != 1. The lexicographically smallest valid permutation satisfying slot(J0)!=1 and slot(J1)<slot(J2) is [2,0,1].",
+          "corrupted_repaired_answer": "{\"metric_mw\":152,\"schedule\":[2,0,1]}"
+        },
+        {
+          "task_id": "live_evid_easy_04",
+          "domain": "evidence_crosscheck",
+          "difficulty": "easy",
+          "initial_correct_answer": "{\"metric_mw\":188,\"schedule\":[0,1,2]}",
+          "false_verifier_critique": "The schedule [0, 1, 2] violates the constraint slot(J0) != 1. The lexicographically smallest valid permutation of [0, 1, 2] satisfying slot(J0)!=1 and slot(J1)<slot(J2) is [2, 0, 1].",
+          "corrupted_repaired_answer": "{\"metric_mw\":188,\"schedule\":[2,0,1]}"
+        },
+        {
+          "task_id": "live_evid_easy_05",
+          "domain": "evidence_crosscheck",
+          "difficulty": "easy",
+          "initial_correct_answer": "{\"metric_mw\":200,\"schedule\":[0,1,2]}",
+          "false_verifier_critique": "The schedule [0,1,2] is invalid because it violates the constraint slot(J0) != 2. The lexicographically smallest valid schedule satisfying all constraints (slot(J0)!=2, slot(J1)<slot(J2)) is [1,0,2].",
+          "corrupted_repaired_answer": "{\"metric_mw\":200,\"schedule\":[1,0,2]}"
+        },
+        {
+          "task_id": "live_evid_hard_04",
+          "domain": "evidence_crosscheck",
+          "difficulty": "hard",
+          "initial_correct_answer": "{\"corrupted_ids\":[\"R2\",\"R4\",\"R6\"],\"reconciled_kW\":2820,\"schedule\":[0,2,1,3,4]}",
+          "false_verifier_critique": "The schedule is incorrect. The candidate `[0, 2, 1, 3, 4]` violates the constraint `W0 < W2` (since $0 \\not< 1$). The lexicographically smallest valid permutation satisfying all constraints ($W_0 < W_2 < W_4$, $W_1 < W_3$, $|W_0 - W_1| \\ge 2$, $W_0 \\neq 1$) is `[0, 3, 2, 4, 1]`. Additionally, R5 should be marked as corrupted because its digit sum ($2+2+0=4$)",
+          "corrupted_repaired_answer": "{\"corrupted_ids\":[\"R2\",\"R4\",\"R6\"],\"reconciled_kW\":2820,\"schedule\":[0,3,2,4,1]}"
+        }
+      ],
+      "false_rejection_examples": [
+        {
+          "task_id": "live_code_med_01",
+          "domain": "code_patch",
+          "difficulty": "medium",
+          "initial_correct_answer": "def solve(intervals):\n    valid = sorted((start, end) for start, end in intervals if start < end)\n    if not valid:\n        return 0\n\n    merged = []\n    merged_start, merged_end = valid[0]\n\n    for start, end in valid[1:]:\n        if start <= merged_end:\n            if end > merged_end:\n                merged_end = end\n        else:\n            merged.appen",
+          "false_verifier_critique": "{\n  \"verdict\": \"REJECT\",\n  \"critique\": \"The merge condition `start <= merged_end` is incorrect. The problem specifies merging when `next_start <= current_end + 0`, which implies adjacent intervals (where `next_start == current_end`) should be merged. However, the candidate code uses `if start <= merged_end:` which correctly handles overlaps and adjacency. Wa",
+          "survived_repair": true
+        },
+        {
+          "task_id": "live_code_med_02",
+          "domain": "code_patch",
+          "difficulty": "medium",
+          "initial_correct_answer": "def solve(intervals):\n    merged = []\n    for start, end in sorted((s, e) for s, e in intervals if s < e):\n        if merged and start <= merged[-1][1] + 1:\n            if end > merged[-1][1]:\n                merged[-1][1] = end\n        else:\n            merged.append([start, end])\n    return sum(min(end - start, 20) for start, end in merged)",
+          "false_verifier_critique": "{\n  \"verdict\": \"REJECT\",\n  \"critique\": \"The candidate answer fails to handle the case where a new interval is completely contained within the last merged interval. Specifically, if `start <= merged[-1][0]` and `end <= merged[-1][1]`, the code correctly skips updating the end, but it does not update the start. However, since we are iterating through sorted in",
+          "survived_repair": true
+        },
+        {
+          "task_id": "live_code_med_03",
+          "domain": "code_patch",
+          "difficulty": "medium",
+          "initial_correct_answer": "def solve(intervals):\n    valid = sorted((start, end) for start, end in intervals if start < end)\n    if not valid:\n        return 0\n\n    merged = []\n    current_start, current_end = valid[0]\n\n    for start, end in valid[1:]:\n        if start <= current_end + 2:\n            if end > current_end:\n                current_end = end\n        else:\n            mer",
+          "false_verifier_critique": "{\n  \"verdict\": \"REJECT\",\n  \"critique\": \"The merge condition `start <= current_end + 2` is incorrect based on the problem statement's interpretation of 'gap bridge'. The problem states that a gap bridge of 2 adds an empty bridged gap into the merged span. This implies that intervals are merged if they overlap OR if the gap between them is less than or equal t",
+          "survived_repair": true
+        },
+        {
+          "task_id": "live_code_hard_01",
+          "domain": "code_patch",
+          "difficulty": "hard",
+          "initial_correct_answer": "def solve(intervals):\n    if len(intervals) < 2:\n        return -1\n\n    intervals = sorted(intervals, key=lambda interval: interval[0])\n    max_right = intervals[0][1]\n    best = -1\n\n    for left, right in intervals[1:]:\n        if max_right >= left:\n            overlap = min(max_right, right) - left\n            if overlap > best:\n                best = over",
+          "false_verifier_critique": "{\n  \"verdict\": \"REJECT\",\n  \"critique\": \"The algorithm is incorrect. It only considers intersections of the current interval with a single 'max_right' value from previous intervals, which does not correctly compute the intersection of ANY subset of size >= 2. Specifically, it fails to track the maximum left bound among subsets that maintain a valid intersecti",
+          "survived_repair": true
+        },
+        {
+          "task_id": "live_code_hard_02",
+          "domain": "code_patch",
+          "difficulty": "hard",
+          "initial_correct_answer": "def solve(intervals):\n    if len(intervals) < 3:\n        return -1\n\n    ordered = sorted(intervals, key=lambda interval: interval[0])\n    best = -1\n    largest = None\n    second_largest = None\n\n    for left, right in ordered:\n        if largest is not None and second_largest is not None:\n            length = min(right, largest, second_largest) - left\n       ",
+          "false_verifier_critique": "{\"verdict\": \"REJECT\", \"critique\": \"The algorithm is incorrect. It iterates through intervals sorted by left endpoint and maintains the two largest right endpoints seen so far. However, to maximize the intersection length $R-L$ for a subset of size at least 3, one must consider subsets where the 'limiting' right endpoint ($R = \\min r_i$) might not be among th",
+          "survived_repair": true
+        }
+      ]
+    },
+    {
+      "config_id": "S3_GLM53_WeakQwenCritic",
+      "p0_empirical": 0.9777777777777777,
+      "p1_empirical": 0.9555555555555556,
+      "p1_markov_formula": 0.9555555555555556,
+      "net_gain_pp": -2.2222222222222143,
+      "alpha_false_rejection": 0.8863636363636364,
+      "beta_false_acceptance": 0.0,
+      "q_i2c_recovery": 0.0,
+      "q_c2i_corruption": 0.02564102564102564,
+      "critical_alpha_star": 0.0,
+      "is_in_harm_regime": true,
+      "n_initial_correct": 44,
+      "n_false_rejections": 39,
+      "n_corrupted_by_critic": 1,
+      "n_recovered_by_critic": 0,
+      "harm_case_studies": [
+        {
+          "task_id": "live_sci_easy_03",
+          "domain": "scientific_symbolic",
+          "difficulty": "easy",
+          "initial_correct_answer": "{\"order\": 4, \"units\": [9, 0, -1, -3]}",
+          "false_verifier_critique": "The dimensional exponent vector is incorrect. For a 4th order reaction in 3D, the units of k are L^3 mol^-1 s^-1 (or M^-3 T^-1). The correct vector [L, M, T, mol] should be [3, -1, -1, 0]. The candidate answer [9, 0, -1, -3] implies units of L^9 mol^-3 s^-1, which is dimensionally inconsistent with r = k[A]^2[B]^2.",
+          "corrupted_repaired_answer": "{\"order\": 4, \"units\": [3, 0, -1, -1]}"
+        }
+      ],
+      "false_rejection_examples": [
+        {
+          "task_id": "live_code_easy_01",
+          "domain": "code_patch",
+          "difficulty": "easy",
+          "initial_correct_answer": "def solve(lo, hi):\n    if lo > hi:\n        return 0\n    count = (hi - 1) // 3 - (lo + 1) // 3 + 1\n    if count < 0:\n        count = 0\n    return 35 if count > 35 else count",
+          "false_verifier_critique": "{\n\"verdict\": \"REJECT\",\n\"critique\": \"The formula `(hi - 1) // 3 - (lo + 1) // 3 + 1` is incorrect for counting integers `x` such that `x % 3 == 1`. The correct count of numbers in `[lo, hi]` congruent to `r` mod `m` is `floor((hi - r)/m) - floor((lo - 1 - r)/m)`. For `r=1, m=3`, this simplifies to `(hi - 1) // 3 - (lo - 2) // 3`. The candidate's term `(lo + 1",
+          "survived_repair": true
+        },
+        {
+          "task_id": "live_code_easy_02",
+          "domain": "code_patch",
+          "difficulty": "easy",
+          "initial_correct_answer": "def solve(lo, hi):\n    if lo > hi:\n        return 0\n    first = lo + ((2 - (lo % 4)) % 4)\n    if first > hi:\n        return 0\n    count = (hi - first) // 4 + 1\n    return count if count < 45 else 45",
+          "false_verifier_critique": "{\"verdict\": \"REJECT\", \"critique\": \"The clamping logic is incorrect. The problem states 'clamped above by 45', which typically means the result should be min(count, 45). The candidate uses `count if count < 45 else 45`, which returns 45 when count >= 45. This is technically correct for integer counts (min(count, 45) == count if count < 45 else 45). However, l",
+          "survived_repair": true
+        },
+        {
+          "task_id": "live_code_easy_03",
+          "domain": "code_patch",
+          "difficulty": "easy",
+          "initial_correct_answer": "def solve(lo, hi):\n    if lo > hi:\n        return 0\n    first = lo + ((3 - lo) % 5)\n    if first > hi:\n        return 0\n    last = hi - ((hi - 3) % 5)\n    count = (last - first) // 5 + 1\n    return min(count, 55)",
+          "false_verifier_critique": "{\n  \"verdict\": \"REJECT\",\n  \"critique\": \"The calculation of `last` is incorrect. The expression `hi - ((hi - 3) % 5)` does not correctly find the largest integer <= hi congruent to 3 mod 5 for all cases, particularly when `hi < 3`. For example, if `lo=0, hi=2`, `first` becomes 3 (which is > hi, so it returns 0 correctly). However, consider `lo=-10, hi=-8`. `x",
+          "survived_repair": true
+        },
+        {
+          "task_id": "live_code_med_01",
+          "domain": "code_patch",
+          "difficulty": "medium",
+          "initial_correct_answer": "def solve(intervals):\n    clean = []\n    for s, e in intervals:\n        if s < e:\n            clean.append((s, e))\n    if not clean:\n        return 0\n    clean.sort(key=lambda x: (x[0], x[1]))\n    merged = []\n    cs, ce = clean[0]\n    for s, e in clean[1:]:\n        if s <= ce:\n            if e > ce:\n                ce = e\n        else:\n            merged.app",
+          "false_verifier_critique": "{\n  \"verdict\": \"REJECT\",\n  \"critique\": \"The merge condition in the candidate code is `if s <= ce`, which only merges overlapping intervals. The problem statement explicitly requires merging adjacent/overlapping intervals whenever `next_start <= current_end + 0` (which simplifies to `s <= ce`) BUT also mentions 'gap bridge 0 adds empty bridged gap'. Wait, let",
+          "survived_repair": true
+        },
+        {
+          "task_id": "live_code_med_03",
+          "domain": "code_patch",
+          "difficulty": "medium",
+          "initial_correct_answer": "def solve(intervals):\n    ivs = sorted((s, e) for s, e in intervals if s < e)\n    if not ivs:\n        return 0\n\n    total = 0\n    cur_start, cur_end = ivs[0]\n\n    for start, end in ivs[1:]:\n        if start <= cur_end + 2:\n            if end > cur_end:\n                cur_end = end\n        else:\n            total += min(cur_end - cur_start, 24)\n            c",
+          "false_verifier_critique": "{\n  \"verdict\": \"REJECT\",\n  \"critique\": \"The candidate answer fails to handle the case where an interval is completely contained within another (e.g., [1, 5] and [2, 3]). The logic `if end > cur_end: cur_end = end` correctly updates the end, but if `end <= cur_end`, it does nothing, which is correct for merging. However, the critical flaw is in the sorting an",
+          "survived_repair": true
+        }
+      ]
+    },
+    {
+      "config_id": "S3_DeepSeek_ToolGLMVer",
+      "p0_empirical": 0.4888888888888889,
+      "p1_empirical": 0.9333333333333333,
+      "p1_markov_formula": 0.9333333333333333,
+      "net_gain_pp": 44.44444444444445,
+      "alpha_false_rejection": 0.0,
+      "beta_false_acceptance": 0.0,
+      "q_i2c_recovery": 0.8695652173913043,
+      "q_c2i_corruption": 0.0,
+      "critical_alpha_star": 1.0,
+      "is_in_harm_regime": false,
+      "n_initial_correct": 22,
+      "n_false_rejections": 0,
+      "n_corrupted_by_critic": 0,
+      "n_recovered_by_critic": 20,
+      "harm_case_studies": [],
+      "false_rejection_examples": []
+    },
+    {
+      "config_id": "S3_MiniMax_ToolGLMVer",
+      "p0_empirical": 0.8,
+      "p1_empirical": 0.8888888888888888,
+      "p1_markov_formula": 0.888888888888889,
+      "net_gain_pp": 8.888888888888879,
+      "alpha_false_rejection": 0.0,
+      "beta_false_acceptance": 0.4444444444444444,
+      "q_i2c_recovery": 0.8,
+      "q_c2i_corruption": 0.0,
+      "critical_alpha_star": 1.0,
+      "is_in_harm_regime": false,
+      "n_initial_correct": 36,
+      "n_false_rejections": 0,
+      "n_corrupted_by_critic": 0,
+      "n_recovered_by_critic": 4,
+      "harm_case_studies": [],
+      "false_rejection_examples": []
+    }
+  ],
+  "configurations": [
+    {
+      "config_id": "S1_QwenFlash_NoThink",
+      "label": "SinglePass: Qwen3.8-Flash (NoThink)",
+      "topology_family": "S1_SinglePass",
+      "accuracy": 0.6444444444444445,
+      "mean_tokens": 388.9111111111111,
+      "p50_latency_ms": 1799.41,
+      "p95_latency_ms": 6754.939999999999,
+      "accuracy_by_difficulty": {
+        "easy": 0.8,
+        "medium": 0.9333333333333333,
+        "hard": 0.2
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.8666666666666667,
+        "scientific_symbolic": 0.4,
+        "evidence_crosscheck": 0.6666666666666666
+      },
+      "is_pareto_2d": true,
+      "pareto_3d_rank": 1
+    },
+    {
+      "config_id": "S1_DeepSeekFlash_NoThink",
+      "label": "SinglePass: DeepSeek-Flash (NoThink)",
+      "topology_family": "S1_SinglePass",
+      "accuracy": 0.4888888888888889,
+      "mean_tokens": 381.68888888888887,
+      "p50_latency_ms": 2574.38,
+      "p95_latency_ms": 6159.729999999999,
+      "accuracy_by_difficulty": {
+        "easy": 0.4,
+        "medium": 0.7333333333333333,
+        "hard": 0.3333333333333333
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.8,
+        "scientific_symbolic": 0.2,
+        "evidence_crosscheck": 0.4666666666666667
+      },
+      "is_pareto_2d": true,
+      "pareto_3d_rank": 1
+    },
+    {
+      "config_id": "S1_MiniMax_M31",
+      "label": "SinglePass: MiniMax-M3.1-Flash",
+      "topology_family": "S1_SinglePass",
+      "accuracy": 0.8,
+      "mean_tokens": 723.2666666666667,
+      "p50_latency_ms": 9614.87,
+      "p95_latency_ms": 17716.053999999996,
+      "accuracy_by_difficulty": {
+        "easy": 0.6666666666666666,
+        "medium": 1.0,
+        "hard": 0.7333333333333333
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.6666666666666666,
+        "scientific_symbolic": 0.8,
+        "evidence_crosscheck": 0.9333333333333333
+      },
+      "is_pareto_2d": true,
+      "pareto_3d_rank": 1
+    },
+    {
+      "config_id": "S1_GLM53_FlashX",
+      "label": "SinglePass: GLM-5.3-FlashX",
+      "topology_family": "S1_SinglePass",
+      "accuracy": 0.9777777777777777,
+      "mean_tokens": 2158.6666666666665,
+      "p50_latency_ms": 4667.41,
+      "p95_latency_ms": 24998.983999999997,
+      "accuracy_by_difficulty": {
+        "easy": 0.9333333333333333,
+        "medium": 1.0,
+        "hard": 1.0
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.9333333333333333,
+        "scientific_symbolic": 1.0,
+        "evidence_crosscheck": 1.0
+      },
+      "is_pareto_2d": true,
+      "pareto_3d_rank": 1
+    },
+    {
+      "config_id": "S1_MiMo_V26",
+      "label": "SinglePass: MiMo-V2.6-Flash",
+      "topology_family": "S1_SinglePass",
+      "accuracy": 0.9333333333333333,
+      "mean_tokens": 1736.6666666666667,
+      "p50_latency_ms": 4119.96,
+      "p95_latency_ms": 17226.863999999987,
+      "accuracy_by_difficulty": {
+        "easy": 0.8666666666666667,
+        "medium": 1.0,
+        "hard": 0.9333333333333333
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.9333333333333333,
+        "scientific_symbolic": 0.9333333333333333,
+        "evidence_crosscheck": 0.9333333333333333
+      },
+      "is_pareto_2d": true,
+      "pareto_3d_rank": 1
+    },
+    {
+      "config_id": "S2_SC3_QwenFlash",
+      "label": "SC@3: Qwen3.8-Flash (NoThink)",
+      "topology_family": "S2_SelfConsistency",
+      "accuracy": 0.6222222222222222,
+      "mean_tokens": 1165.2444444444445,
+      "p50_latency_ms": 2216.53,
+      "p95_latency_ms": 15578.773999999994,
+      "accuracy_by_difficulty": {
+        "easy": 0.8,
+        "medium": 0.8666666666666667,
+        "hard": 0.2
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.8666666666666667,
+        "scientific_symbolic": 0.4,
+        "evidence_crosscheck": 0.6
+      },
+      "is_pareto_2d": false,
+      "pareto_3d_rank": 2
+    },
+    {
+      "config_id": "S2_SC5_DeepSeekFlash",
+      "label": "SC@5: DeepSeek-Flash (NoThink)",
+      "topology_family": "S2_SelfConsistency",
+      "accuracy": 0.5777777777777777,
+      "mean_tokens": 1635.6444444444444,
+      "p50_latency_ms": 2941.58,
+      "p95_latency_ms": 6757.965999999999,
+      "accuracy_by_difficulty": {
+        "easy": 0.4666666666666667,
+        "medium": 0.9333333333333333,
+        "hard": 0.3333333333333333
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.8,
+        "scientific_symbolic": 0.4,
+        "evidence_crosscheck": 0.5333333333333333
+      },
+      "is_pareto_2d": false,
+      "pareto_3d_rank": 2
+    },
+    {
+      "config_id": "S3_DeepSeek_WeakQwenCritic",
+      "label": "GenVerify: DeepSeek-Flash + Weak Qwen Critic",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.7777777777777778,
+      "mean_tokens": 2270.4222222222224,
+      "p50_latency_ms": 11875.61,
+      "p95_latency_ms": 20784.406,
+      "accuracy_by_difficulty": {
+        "easy": 0.8666666666666667,
+        "medium": 0.9333333333333333,
+        "hard": 0.5333333333333333
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.8666666666666667,
+        "scientific_symbolic": 0.6666666666666666,
+        "evidence_crosscheck": 0.8
+      },
+      "is_pareto_2d": false,
+      "pareto_3d_rank": 3
+    },
+    {
+      "config_id": "S3_MiniMax_WeakQwenCritic",
+      "label": "GenVerify: MiniMax-M3.1 + Weak Qwen Critic [Harm]",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.7777777777777778,
+      "mean_tokens": 3340.311111111111,
+      "p50_latency_ms": 26830.66,
+      "p95_latency_ms": 50501.202,
+      "accuracy_by_difficulty": {
+        "easy": 0.5333333333333333,
+        "medium": 1.0,
+        "hard": 0.8
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.7333333333333333,
+        "scientific_symbolic": 0.8666666666666667,
+        "evidence_crosscheck": 0.7333333333333333
+      },
+      "is_pareto_2d": false,
+      "pareto_3d_rank": 4
+    },
+    {
+      "config_id": "S3_GLM53_WeakQwenCritic",
+      "label": "GenVerify: GLM-5.3-FlashX + Weak Qwen Critic [Harm]",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.9555555555555556,
+      "mean_tokens": 7163.111111111111,
+      "p50_latency_ms": 23979.43,
+      "p95_latency_ms": 80265.35999999996,
+      "accuracy_by_difficulty": {
+        "easy": 0.8666666666666667,
+        "medium": 1.0,
+        "hard": 1.0
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.9333333333333333,
+        "scientific_symbolic": 0.9333333333333333,
+        "evidence_crosscheck": 1.0
+      },
+      "is_pareto_2d": false,
+      "pareto_3d_rank": 3
+    },
+    {
+      "config_id": "S3_DeepSeek_ToolGLMVer",
+      "label": "GenVerify: DeepSeek-Flash + MicroCheck + GLM-5.3 Verifier",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.9333333333333333,
+      "mean_tokens": 2239.2444444444445,
+      "p50_latency_ms": 8541.1,
+      "p95_latency_ms": 20636.068,
+      "accuracy_by_difficulty": {
+        "easy": 0.9333333333333333,
+        "medium": 1.0,
+        "hard": 0.8666666666666667
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.9333333333333333,
+        "scientific_symbolic": 1.0,
+        "evidence_crosscheck": 0.8666666666666667
+      },
+      "is_pareto_2d": false,
+      "pareto_3d_rank": 2
+    },
+    {
+      "config_id": "S3_MiniMax_ToolGLMVer",
+      "label": "GenVerify: MiniMax-M3.1 + MicroCheck + GLM-5.3 Verifier",
+      "topology_family": "S3_GenVerifyLoop",
+      "accuracy": 0.8888888888888888,
+      "mean_tokens": 2669.2,
+      "p50_latency_ms": 16008.970000000001,
+      "p95_latency_ms": 44518.95599999996,
+      "accuracy_by_difficulty": {
+        "easy": 0.6666666666666666,
+        "medium": 1.0,
+        "hard": 1.0
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.6666666666666666,
+        "scientific_symbolic": 1.0,
+        "evidence_crosscheck": 1.0
+      },
+      "is_pareto_2d": false,
+      "pareto_3d_rank": 3
+    },
+    {
+      "config_id": "S4_HeteroDebate_3Family",
+      "label": "DebateDAG: GLM-5.3 x MiMo-V2.6 -> MiniMax-M3 Judge",
+      "topology_family": "S4_AdversarialDebateDAG",
+      "accuracy": 0.9555555555555556,
+      "mean_tokens": 5128.2444444444445,
+      "p50_latency_ms": 13400.439999999999,
+      "p95_latency_ms": 41384.01999999999,
+      "accuracy_by_difficulty": {
+        "easy": 0.8666666666666667,
+        "medium": 1.0,
+        "hard": 1.0
+      },
+      "accuracy_by_domain": {
+        "code_patch": 0.8666666666666667,
+        "scientific_symbolic": 1.0,
+        "evidence_crosscheck": 1.0
+      },
+      "is_pareto_2d": false,
+      "pareto_3d_rank": 2
+    },
+    {
+      "config_id": "S5_ParetoRouter_Eco",
+      "label": "ParetoRouter-Eco (OmniHarness Fast+Mid+Gate)",
+      "topology_family": "S5_ParetoAdaptiveRouter",
+      "accuracy": 0.9555555555555556,
+      "mean_tokens": 1866.0,
+      "p50_latency_ms": 5374.75,
+      "p95_latency_ms": 25784.345999999965,
+      "accuracy_by_difficulty": {
+        "easy": 0.9333333333333333,
+        "medium": 1.0,
+        "hard": 0.9333333333333333
+      },
+      "accuracy_by_domain": {
+        "code_patch": 1.0,
+        "scientific_symbolic": 0.9333333333333333,
+        "evidence_crosscheck": 0.9333333333333333
+      },
+      "router_tier_fractions": {
+        "tier2_micro_verified": 0.5777777777777777,
+        "tier1_fast_consensus": 0.4222222222222222
+      },
+      "tier3_disagreement_shortcircuit_rate": 0.0,
+      "is_pareto_2d": true,
+      "pareto_3d_rank": 1
+    },
+    {
+      "config_id": "S5_ParetoRouter_Strict",
+      "label": "ParetoRouter-Strict (OmniHarness DualProbe+HeteroGate)",
+      "topology_family": "S5_ParetoAdaptiveRouter",
+      "accuracy": 1.0,
+      "mean_tokens": 3049.711111111111,
+      "p50_latency_ms": 5829.62,
+      "p95_latency_ms": 44623.97399999996,
+      "accuracy_by_difficulty": {
+        "easy": 1.0,
+        "medium": 1.0,
+        "hard": 1.0
+      },
+      "accuracy_by_domain": {
+        "code_patch": 1.0,
+        "scientific_symbolic": 1.0,
+        "evidence_crosscheck": 1.0
+      },
+      "router_tier_fractions": {
+        "tier2_micro_verified": 0.4,
+        "tier1_fast_consensus": 0.28888888888888886,
+        "tier3_hetero_gate": 0.24444444444444444,
+        "tier3_quorum_arbiter": 0.06666666666666667
+      },
+      "tier3_disagreement_shortcircuit_rate": 1.0,
+      "is_pareto_2d": true,
+      "pareto_3d_rank": 1
+    }
+  ]
+}
